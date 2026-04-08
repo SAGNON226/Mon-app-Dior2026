@@ -83,66 +83,34 @@
             <div class="nav-item"><i class="fas fa-users"></i>ÉQUIPE</div>
             <div class="nav-item"><i class="fas fa-user"></i>COMPTE</div>
         </nav>
-    </div>
+   <script>
+    const supabaseUrl = "https://ciamfmmmznshnmmtxntf.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXByYWJhc2UiLCJhdWQiOiJhbm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0MzM4MzksImV4cCI6MjA2MTAwOTgzOX0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+    
+    // Initialisation du client
+    const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Configuration Supabase avec tes clés
-const supabaseUrl = "https://ciamfmmmznshnmmtxntf.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXByYWJhc2UiLCJhdWQiOiJhbm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0MzM4MzksImV4cCI6MjA2MTAwOTgzOX0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
-const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    async function validerAuth() {
+        const pays = document.getElementById('pays').value;
+        const num = document.getElementById('numero').value;
+        const code = document.getElementById('code').value;
+        const complet = pays + num;
 
-let modeLogin = false;
+        if(!num || !code) { alert("Veuillez remplir les champs"); return; }
 
-function switchTab(mode) {
-    modeLogin = (mode === 'login');
-    document.getElementById('tab-login').className = modeLogin ? 'tab active' : 'tab';
-    document.getElementById('tab-register').className = modeLogin ? 'tab' : 'tab active';
-    document.getElementById('group-parrain').style.display = modeLogin ? 'none' : 'block';
-    document.getElementById('btn-auth').innerText = modeLogin ? 'Se connecter' : 'Créer mon compte';
-}
-
-async function validerAuth() {
-    const pays = document.getElementById('pays').value;
-    const num = document.getElementById('numero').value;
-    const code = document.getElementById('code').value;
-    const complet = pays + num;
-
-    if(!num || !code) { alert("Veuillez remplir tous les champs !"); return; }
-
-    if(!modeLogin) {
-        // INSCRIPTION AVEC BONUS DE 500 F
+        // INSCRIPTION AVEC BONUS 500 F
         const { data, error } = await _supabase
             .from('utilisateurs')
-            .insert([{ 
-                numero: complet, 
-                pin: code, 
-                solde: 500 
-            }]);
+            .insert([{ numero: complet, pin: code, solde: 500 }]);
 
         if (error) {
-            alert("Ce numéro est déjà utilisé.");
+            alert("Erreur ou numéro déjà utilisé. Vérifiez votre table Supabase.");
         } else {
-            alert("Félicitations ! Bonus de 500 F offert.");
-            ouvrirApp(500);
-        }
-    } else {
-        // CONNEXION
-        const { data, error } = await _supabase
-            .from('utilisateurs')
-            .select('*')
-            .eq('numero', complet)
-            .eq('pin', code);
-
-        if (data && data.length > 0) {
-            ouvrirApp(data[0].solde);
-        } else {
-            alert("Numéro ou code secret incorrect.");
+            alert("Bienvenue ! Bonus de 500 F ajouté.");
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.querySelectorAll('.stat-card b')[0].innerText = "500 F";
         }
     }
-}
+</script>
 
-function ouvrirApp(soldeActuel) {
-    // Affiche le solde dans la première case
-    document.querySelectorAll('.stat-card b')[0].innerText = soldeActuel + " F";
-    document.getElementById('auth-page').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-}
