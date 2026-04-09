@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIOR FASHION - Authentification</title>
+    <title>DIOR FASHION - Investissement</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root { --gold: #d4af37; --dark: #000; --grey: #1a1a1a; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; overflow-x: hidden; }
         
-        /* --- STYLE EXTÉRIEUR --- */
+        /* AUTH PAGE */
         #auth-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
-        .logo-dior { font-size: 50px; font-weight: bold; letter-spacing: 10px; margin-bottom: 30px; color: white; }
+        .logo-dior { font-size: 50px; font-weight: bold; letter-spacing: 10px; margin-bottom: 30px; }
         .tabs { display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 1px solid #333; width: 100%; justify-content: center; }
         .tab { padding: 10px 20px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; transition: 0.3s; }
         .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
@@ -22,15 +22,19 @@
         .btn-gold { width: 100%; padding: 15px; border: 1px solid var(--gold); background: none; color: var(--gold); font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 20px; }
         .btn-gold:hover { background: var(--gold); color: black; }
 
-        /* --- STYLE INTÉRIEUR --- */
-        #main-app { display: none; }
+        /* MAIN APP */
+        #main-app { display: none; padding-bottom: 80px; }
         .header { background: var(--grey); padding: 20px; text-align: center; border-bottom: 1px solid #333; }
         .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; background: var(--grey); }
-        .action-item { text-align: center; font-size: 11px; }
+        .action-item { text-align: center; font-size: 12px; }
         .action-item i { font-size: 24px; color: var(--gold); margin-bottom: 8px; display: block; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
-        .stat-card { background: var(--grey); padding: 15px; text-align: center; border-radius: 5px; border: 1px solid #333; }
+        .stat-card { background: var(--grey); padding: 15px; text-align: center; border-radius: 5px; }
         .stat-card b { font-size: 18px; color: var(--gold); }
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--grey); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
+        .nav-item { text-align: center; color: #888; font-size: 11px; text-decoration: none; }
+        .nav-item.active { color: var(--gold); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -75,16 +79,23 @@
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card"><b><span id="solde-val">0</span> F</b><br><small>Solde Compte</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Revenu Total</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Commission</small></div>
+            <div class="stat-card"><b id="display-solde">0 F</b><br><small>Solde</small></div>
+            <div class="stat-card"><b>0 F</b><br><small>Aujourd'hui</small></div>
+            <div class="stat-card"><b>0 F</b><br><small>Total</small></div>
         </div>
+
+        <nav class="nav-bottom">
+            <a href="#" class="nav-item active"><i class="fas fa-home"></i>ACCUEIL</a>
+            <a href="#" class="nav-item"><i class="fas fa-chart-line"></i>INVESTIR</a>
+            <a href="#" class="nav-item"><i class="fas fa-users"></i>ÉQUIPE</a>
+            <a href="#" class="nav-item"><i class="fas fa-user"></i>COMPTE</a>
+        </nav>
     </div>
 
     <script>
-        // TES CLÉS SUPABASE
+        // CONFIGURATION AVEC TES CLÉS RÉELLES
         const supabaseUrl = "https://ciamfmmmznshnmmtxntf.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXByYWJhc2UiLCJhdWQiOiJhbm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0MzM4MzksImV4cCI6MjA2MTAwOTgzOX0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         let modeLogin = false;
@@ -112,10 +123,9 @@
                     .insert([{ numero: complet, pin: code, solde: 500 }]);
 
                 if (error) {
-                    // C'EST CETTE LIGNE QUI NOUS DIRA LA VÉRITÉ :
-                    alert("Erreur Supabase : " + error.message);
+                    alert("Erreur : " + error.message);
                 } else {
-                    alert("Succès ! 500 F de bonus ajoutés.");
+                    alert("Félicitations ! Compte créé avec 500 F de bonus.");
                     ouvrirApp(500);
                 }
             } else {
@@ -134,11 +144,12 @@
             }
         }
 
-        function ouvrirApp(montant) {
-            document.getElementById('solde-val').innerText = montant;
+        function ouvrirApp(solde) {
+            document.getElementById('display-solde').innerText = solde + " F";
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
         }
     </script>
 </body>
 </html>
+
