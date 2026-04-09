@@ -4,148 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIOR FASHION - Investissement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root { --gold: #d4af37; --dark: #000; --grey: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; overflow-x: hidden; }
-        
-        /* AUTH PAGE */
-        #auth-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; text-align: center; }
+        #auth-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .logo-dior { font-size: 50px; font-weight: bold; letter-spacing: 10px; margin-bottom: 30px; }
-        .tabs { display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 1px solid #333; width: 100%; justify-content: center; }
-        .tab { padding: 10px 20px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; transition: 0.3s; }
-        .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
-        .auth-form { width: 100%; max-width: 350px; }
-        .input-group { position: relative; margin-bottom: 20px; border-bottom: 1px solid #444; }
+        .input-group { margin-bottom: 20px; border-bottom: 1px solid #444; width: 100%; max-width: 350px; }
         .input-group select, .input-group input { width: 100%; background: none; border: none; color: white; padding: 12px; outline: none; font-size: 16px; }
-        .btn-gold { width: 100%; padding: 15px; border: 1px solid var(--gold); background: none; color: var(--gold); font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 20px; }
-        .btn-gold:hover { background: var(--gold); color: black; }
-
-        /* MAIN APP */
-        #main-app { display: none; padding-bottom: 80px; }
-        .header { background: var(--grey); padding: 20px; text-align: center; border-bottom: 1px solid #333; }
-        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; background: var(--grey); }
-        .action-item { text-align: center; font-size: 12px; }
-        .action-item i { font-size: 24px; color: var(--gold); margin-bottom: 8px; display: block; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
-        .stat-card { background: var(--grey); padding: 15px; text-align: center; border-radius: 5px; }
-        .stat-card b { font-size: 18px; color: var(--gold); }
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--grey); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
-        .nav-item { text-align: center; color: #888; font-size: 11px; text-decoration: none; }
-        .nav-item.active { color: var(--gold); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .btn-gold { width: 100%; max-width: 350px; padding: 15px; border: 1px solid var(--gold); background: none; color: var(--gold); font-size: 16px; cursor: pointer; margin-top: 20px; }
+        #main-app { display: none; padding: 20px; }
+        .stat-card { background: var(--grey); padding: 20px; border: 1px solid var(--gold); border-radius: 10px; margin: 20px auto; max-width: 300px; }
     </style>
 </head>
 <body>
 
     <div id="auth-page">
         <div class="logo-dior">DIOR</div>
-        <div class="tabs">
-            <div id="tab-login" class="tab" onclick="switchTab('login')">Connexion</div>
-            <div id="tab-register" class="tab active" onclick="switchTab('register')">Inscription</div>
+        <div class="input-group">
+            <select id="pays">
+                <option value="+226">Burkina Faso (+226)</option>
+                <option value="+229">Bénin (+229)</option>
+            </select>
         </div>
-
-        <div class="auth-form">
-            <div class="input-group">
-                <select id="pays">
-                    <option value="+226">Burkina Faso (+226)</option>
-                    <option value="+229">Bénin (+229)</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <input type="number" id="numero" placeholder="Numéro de téléphone">
-            </div>
-            <div class="input-group">
-                <input type="password" id="code" placeholder="Code secret">
-            </div>
-            <div class="input-group" id="group-parrain">
-                <input type="text" id="parrain" placeholder="Code parrainage (optionnel)">
-            </div>
-            <button class="btn-gold" id="btn-auth" onclick="validerAuth()">Créer mon compte</button>
-        </div>
+        <div class="input-group"><input type="number" id="numero" placeholder="Numéro de téléphone"></div>
+        <div class="input-group"><input type="password" id="pin" placeholder="Code secret"></div>
+        <button class="btn-gold" onclick="creerCompte()">CRÉER MON COMPTE</button>
     </div>
 
     <div id="main-app">
-        <div class="header">
-            <div class="logo-dior" style="font-size: 24px; margin: 0;">DIOR</div>
+        <div class="logo-dior" style="font-size: 24px;">DIOR</div>
+        <div class="stat-card">
+            <small>SOLDE TOTAL</small><br>
+            <b style="font-size: 25px; color: var(--gold);"><span id="solde-val">0</span> F CFA</b>
         </div>
-        
-        <div class="action-grid">
-            <div class="action-item"><i class="fas fa-wallet"></i><span>Recharger</span></div>
-            <div class="action-item"><i class="fas fa-hand-holding-usd"></i><span>Retirer</span></div>
-            <div class="action-item"><i class="fas fa-headset"></i><span>Service</span></div>
-            <div class="action-item"><i class="fas fa-gift"></i><span>Cadeau</span></div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card"><b id="display-solde">0 F</b><br><small>Solde</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Aujourd'hui</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Total</small></div>
-        </div>
-
-        <nav class="nav-bottom">
-            <a href="#" class="nav-item active"><i class="fas fa-home"></i>ACCUEIL</a>
-            <a href="#" class="nav-item"><i class="fas fa-chart-line"></i>INVESTIR</a>
-            <a href="#" class="nav-item"><i class="fas fa-users"></i>ÉQUIPE</a>
-            <a href="#" class="nav-item"><i class="fas fa-user"></i>COMPTE</a>
-        </nav>
+        <p>Bienvenue ! Votre bonus de bienvenue de 500 F est actif.</p>
     </div>
 
     <script>
-        // CONFIGURATION AVEC TES CLÉS RÉELLES
+        // Configuration de tes clés Supabase réelles
         const supabaseUrl = "https://ciamfmmmznshnmmtxntf.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+        
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let modeLogin = false;
-
-        function switchTab(mode) {
-            modeLogin = (mode === 'login');
-            document.getElementById('tab-login').className = modeLogin ? 'tab active' : 'tab';
-            document.getElementById('tab-register').className = modeLogin ? 'tab' : 'tab active';
-            document.getElementById('group-parrain').style.display = modeLogin ? 'none' : 'block';
-            document.getElementById('btn-auth').innerText = modeLogin ? 'Se connecter' : 'Créer mon compte';
-        }
-
-        async function validerAuth() {
+        async function creerCompte() {
             const pays = document.getElementById('pays').value;
             const num = document.getElementById('numero').value;
-            const code = document.getElementById('code').value;
-            const complet = pays + num;
+            const codeSecret = document.getElementById('pin').value;
+            const numeroComplet = pays + num;
 
-            if(!num || !code) { alert("Veuillez remplir les champs !"); return; }
+            if(!num || !codeSecret) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
 
-            if(!modeLogin) {
-                // INSCRIPTION + BONUS 500 F
-                const { data, error } = await _supabase
-                    .from('utilisateurs')
-                    .insert([{ numero: complet, pin: code, solde: 500 }]);
+            // Insertion dans la table utilisateurs avec bonus
+            const { data, error } = await _supabase
+                .from('utilisateurs')
+                .insert([{ 
+                    numero: numeroComplet, 
+                    pin: codeSecret, 
+                    solde: 500 
+                }]);
 
-                if (error) {
-                    alert("Erreur : " + error.message);
-                } else {
-                    alert("Félicitations ! Compte créé avec 500 F de bonus.");
-                    ouvrirApp(500);
-                }
+            if (error) {
+                alert("Erreur lors de la création : " + error.message);
             } else {
-                // CONNEXION
-                const { data, error } = await _supabase
-                    .from('utilisateurs')
-                    .select('*')
-                    .eq('numero', complet)
-                    .eq('pin', code);
-
-                if (data && data.length > 0) {
-                    ouvrirApp(data[0].solde);
-                } else {
-                    alert("Numéro ou code secret incorrect.");
-                }
+                alert("Compte créé avec succès ! Bonus de 500 F offert.");
+                afficherApp(500);
             }
         }
 
-        function ouvrirApp(solde) {
-            document.getElementById('display-solde').innerText = solde + " F";
+        function afficherApp(montant) {
+            document.getElementById('solde-val').innerText = montant;
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
         }
