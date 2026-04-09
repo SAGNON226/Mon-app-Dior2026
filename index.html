@@ -3,153 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIOR FASHION - Authentification</title>
+    <title>DIOR FASHION - Investissement Professionnel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #000; --grey: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; overflow-x: hidden; }
+        :root { --gold: #d4af37; --dark: #000; --grey: #1a1a1a; --card: #252525; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; overflow-x: hidden; padding-bottom: 70px; }
         
-        /* --- STYLE EXTÉRIEUR (LOGIN/SIGNUP) --- */
-        #auth-page { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
-        .logo-dior { font-size: 50px; letter-spacing: 15px; margin-bottom: 40px; font-weight: 300; }
-        .auth-container { background: var(--grey); padding: 30px; border-radius: 5px; width: 100%; max-width: 350px; border: 1px solid #333; }
-        .auth-tabs { display: flex; justify-content: space-around; margin-bottom: 30px; }
-        .tab { color: #888; cursor: pointer; padding-bottom: 5px; }
-        .tab.active { color: white; border-bottom: 2px solid var(--gold); }
-        .input-group { margin-bottom: 15px; }
-        select, input { width: 100%; background: none; border: none; border-bottom: 1px solid #555; color: white; padding: 10px 0; outline: none; }
-        .btn-action { width: 100%; background: none; border: 1px solid var(--gold); color: var(--gold); padding: 12px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-        .btn-action:hover { background: var(--gold); color: black; }
-        
-        /* --- STYLE INTÉRIEUR (DASHBOARD) --- */
-        #main-app { display: none; padding-bottom: 80px; }
-        .banner { width: 100%; height: 160px; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1000&auto=format&fit=crop'); background-size: cover; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: var(--gold); border-bottom: 2px solid var(--gold); }
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; text-align: center; background: #1e1e1e; margin: -20px 15px 20px 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .action-item i { font-size: 20px; color: var(--gold); display: block; margin-bottom: 5px; }
-        .action-item span { font-size: 10px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 15px; }
-        .stat-card { background: #1e1e1e; padding: 15px 5px; border-radius: 12px; text-align: center; border: 1px solid #333; }
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #1e1e1e; display: grid; grid-template-columns: repeat(4, 1fr); padding: 12px 0; border-top: 1px solid #333; text-align: center; }
-        .nav-item { color: #888; font-size: 11px; cursor: pointer; }
-        .nav-item i { display: block; font-size: 18px; margin-bottom: 3px; }
+        /* AUTH & UTILS */
+        .hidden { display: none !important; }
+        .logo-dior { font-size: 40px; letter-spacing: 12px; font-weight: 300; text-align: center; margin: 30px 0; }
+        .btn-gold { background: var(--gold); color: black; border: none; padding: 12px; font-weight: bold; width: 100%; border-radius: 5px; cursor: pointer; }
+
+        /* DASHBOARD */
+        .banner { width: 100%; height: 180px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 28px; border-bottom: 3px solid var(--gold); }
+        .balance-card { background: var(--grey); margin: -30px 20px 20px 20px; padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; position: relative; z-index: 10; }
+        .balance-amount { font-size: 30px; color: var(--gold); font-weight: bold; }
+
+        /* VIP CARDS */
+        .vip-container { padding: 15px; }
+        .vip-card { background: var(--card); border-radius: 10px; margin-bottom: 15px; display: flex; overflow: hidden; border: 1px solid #333; }
+        .vip-img { width: 100px; height: 100px; object-fit: cover; }
+        .vip-info { padding: 10px; flex: 1; }
+        .vip-price { color: var(--gold); font-weight: bold; }
+
+        /* NAVIGATION */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; }
+        .nav-item { color: #888; font-size: 11px; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--gold); }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; }
+
+        /* PAGES SECTIONS */
+        .page-content { padding: 20px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        input { width: 100%; background: #222; border: 1px solid #444; color: white; padding: 12px; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <div id="auth-page">
+    <div id="auth-section">
         <div class="logo-dior">DIOR</div>
-        <div class="auth-container">
-            <div class="auth-tabs">
-                <span id="tab-login" class="tab" onclick="switchTab('login')">Connexion</span>
-                <span id="tab-register" class="tab active" onclick="switchTab('register')">Inscription</span>
-            </div>
-            
+        <div style="padding: 20px; max-width: 350px; margin: auto; background: var(--grey); border-radius: 10px;">
             <div class="input-group">
-                <select id="pays">
-                    <option value="+226">Burkina Faso (+226)</option>
-                    <option value="+229">Bénin (+229)</option>
-                </select>
+                <input type="number" id="auth-num" placeholder="Numéro de téléphone">
             </div>
             <div class="input-group">
-                <input type="number" id="auth-numero" placeholder="Numéro">
+                <input type="password" id="auth-pin" placeholder="Code secret (PIN)">
             </div>
-            <div class="input-group">
-                <input type="password" id="auth-code" placeholder="Code secret (PIN)">
+            <div class="input-group" id="reg-bonus">
+                <input type="text" id="auth-ref" placeholder="Code d'invitation (Optionnel)">
             </div>
-            <div class="input-group" id="group-parrainage">
-                <input type="text" id="auth-parrain" placeholder="Code parrainage (optionnel)">
-            </div>
-            
-            <button id="auth-btn" class="btn-action" onclick="handleAuth()">Créer</button>
+            <button class="btn-gold" onclick="connexion()">SE CONNECTER / S'INSCRIRE</button>
         </div>
     </div>
 
-    <div id="main-app">
-        <div class="banner">DIOR FASHION</div>
-        <div class="quick-actions">
-            <div class="action-item"><i class="fas fa-wallet"></i><span>Recharger</span></div>
-            <div class="action-item"><i class="fas fa-hand-holding-usd"></i><span>Retirer</span></div>
-            <div class="action-item"><i class="fas fa-headset"></i><span>Service</span></div>
-            <div class="action-item"><i class="fas fa-gift"></i><span>Cadeau</span></div>
+    <div id="app-section" class="hidden">
+        <div id="page-home" class="page">
+            <div class="banner">DIOR FASHION</div>
+            <div class="balance-card">
+                <small>MON SOLDE</small>
+                <div class="balance-amount"><span id="user-money">0</span> F CFA</div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-gold" style="padding: 8px; font-size: 12px;">DÉPÔT</button>
+                    <button class="btn-gold" style="padding: 8px; font-size: 12px; background: white;">RETRAIT</button>
+                </div>
+            </div>
+            <div class="vip-container">
+                <h3 style="border-left: 3px solid var(--gold); padding-left: 10px;">PRODUITS VIP</h3>
+                <div class="vip-card">
+                    <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200" class="vip-img">
+                    <div class="vip-info">
+                        <b>Sac Lady Dior VIP 1</b><br>
+                        <span class="vip-price">Prix: 5 000 F</span><br>
+                        <small>Revenu: 500 F / jour</small>
+                        <button class="btn-gold" style="margin-top: 5px; padding: 5px;">Investir</button>
+                    </div>
+                </div>
+                <div class="vip-card">
+                    <img src="https://images.unsplash.com/photo-1591360236480-4ed861025fa1?w=200" class="vip-img">
+                    <div class="vip-info">
+                        <b>Parfum Sauvage VIP 2</b><br>
+                        <span class="vip-price">Prix: 15 000 F</span><br>
+                        <small>Revenu: 1 800 F / jour</small>
+                        <button class="btn-gold" style="margin-top: 5px; padding: 5px;">Investir</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stats-grid">
-            <div class="stat-card"><b id="display-solde">0 F</b><br><small>Solde</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Aujourd'hui</small></div>
-            <div class="stat-card"><b>0 F</b><br><small>Total</small></div>
+
+        <div id="page-team" class="page-content hidden">
+            <h2 style="color: var(--gold);">MON ÉQUIPE</h2>
+            <div class="balance-card">
+                <small>Mon Code d'Invitation</small>
+                <div style="font-size: 20px; font-weight: bold; margin: 10px 0;" id="my-ref-code">DIOR-XXXX</div>
+                <button onclick="copyRef()" style="background: none; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; border-radius: 5px; cursor: pointer;">Copier le lien</button>
+            </div>
+            <div style="background: var(--grey); padding: 15px; border-radius: 10px;">
+                <h4>Membres invités : <span id="team-count">0</span></h4>
+                <div id="team-list" style="font-size: 13px; color: #aaa;">
+                    Aucun ami invité pour le moment.
+                </div>
+            </div>
         </div>
-        
+
         <nav class="nav-bottom">
-            <div class="nav-item active"><i class="fas fa-home"></i>ACCUEIL</div>
-            <div class="nav-item"><i class="fas fa-chart-line"></i>INVESTIR</div>
-            <div class="nav-item"><i class="fas fa-users"></i>ÉQUIPE</div>
-            <div class="nav-item"><i class="fas fa-user"></i>COMPTE</div>
+            <div class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-home"></i>Accueil</div>
+            <div class="nav-item" onclick="showPage('team', this)"><i class="fas fa-users"></i>Équipe</div>
+            <div class="nav-item"><i class="fas fa-wallet"></i>Finance</div>
+            <div class="nav-item" onclick="location.reload()"><i class="fas fa-user"></i>Profil</div>
         </nav>
     </div>
 
     <script>
         // CONFIGURATION SUPABASE
         const supabaseUrl = "https://ciamfmmmznshnmmtxntf.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M"; 
-        
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        
-        let isLogin = false;
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+        const _sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        function switchTab(type) {
-            isLogin = (type === 'login');
-            document.getElementById('tab-login').className = isLogin ? 'tab active' : 'tab';
-            document.getElementById('tab-register').className = isLogin ? 'tab' : 'tab active';
-            document.getElementById('group-parrainage').style.display = isLogin ? 'none' : 'block';
-            document.getElementById('auth-btn').innerText = isLogin ? 'Se connecter' : 'Créer';
-        }
+        let currentUser = null;
 
-        async function handleAuth() {
-            const pays = document.getElementById('pays').value;
-            const num = document.getElementById('auth-numero').value;
-            const pin = document.getElementById('auth-code').value;
-            const fullNum = pays + num;
+        async function connexion() {
+            const num = document.getElementById('auth-num').value;
+            const pin = document.getElementById('auth-pin').value;
+            const ref = document.getElementById('auth-ref').value;
 
-            if(!num || !pin) return alert("Veuillez remplir tous les champs");
+            if(!num || !pin) return alert("Remplissez vos accès !");
 
-            if(!isLogin) {
-                // LOGIQUE INSCRIPTION
-                const { data, error } = await _supabase
-                    .from('utilisateurs')
-                    .insert([{ numero: fullNum, pin: pin, solde: 500 }]);
+            // 1. Tenter de trouver l'utilisateur
+            let { data: user, error } = await _sb.from('utilisateurs').select('*').eq('numero', num).eq('pin', pin).single();
 
-                if (error) {
-                    if(error.message.includes("unique")) alert("Ce numéro est déjà utilisé.");
-                    else alert("Erreur : " + error.message);
-                } else {
-                    alert("Compte créé ! Bonus de 500 F offert.");
-                    enterApp(500);
-                }
+            if (user) {
+                loginSuccess(user);
             } else {
-                // LOGIQUE CONNEXION
-                const { data, error } = await _supabase
-                    .from('utilisateurs')
-                    .select('*')
-                    .eq('numero', fullNum)
-                    .eq('pin', pin)
-                    .single();
+                // 2. Si non trouvé, on l'inscrit (Inscription automatique)
+                const myNewRef = "DIOR-" + Math.floor(1000 + Math.random() * 9000);
+                const { data: newUser, error: regErr } = await _sb.from('utilisateurs').insert([
+                    { numero: num, pin: pin, solde: 500, invite_par: ref }
+                ]).select().single();
 
-                if (error || !data) {
-                    alert("Numéro ou code PIN incorrect.");
-                } else {
-                    enterApp(data.solde);
+                if (regErr) alert("Erreur: " + regErr.message);
+                else {
+                    alert("Bienvenue ! 500 F offerts.");
+                    loginSuccess(newUser);
                 }
             }
         }
 
-        function enterApp(solde) {
-            document.getElementById('display-solde').innerText = solde + " F";
-            document.getElementById('auth-page').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
+        function loginSuccess(user) {
+            currentUser = user;
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-section').classList.remove('hidden');
+            document.getElementById('user-money').innerText = user.solde;
+            document.getElementById('my-ref-code').innerText = "DIOR-" + user.numero.slice(-4);
+            loadTeam();
+        }
+
+        async function loadTeam() {
+            // Chercher les gens qui ont mis notre numéro comme parrain
+            const myCode = currentUser.numero;
+            const { data: team, error } = await _sb.from('utilisateurs').select('numero').eq('invite_par', myCode);
+            
+            if(team && team.length > 0) {
+                document.getElementById('team-count').innerText = team.length;
+                document.getElementById('team-list').innerHTML = team.map(m => `<div>👤 Membre: ${m.numero.slice(0, 6)}****</div>`).join('');
+            }
+        }
+
+        function showPage(pageId, el) {
+            document.querySelectorAll('.page, .page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function copyRef() {
+            const code = document.getElementById('my-ref-code').innerText;
+            navigator.clipboard.writeText("Inscris-toi sur Dior avec mon code : " + code);
+            alert("Lien de parrainage copié !");
         }
     </script>
 </body>
 </html>
-
 
