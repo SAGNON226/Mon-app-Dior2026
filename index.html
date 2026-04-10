@@ -1,292 +1,165 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIOR FASHION - Investissement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>DIOR LUXURY - Investissement</title>
     <style>
-        :root { --gold: #d4af37; --dark: #000; --card: #1a1a1a; --orange: #e88e0c; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--dark); color: white; padding-bottom: 70px; }
-        .hidden { display: none !important; }
-        
-        /* HEADER & SOLDE */
-        .top-info { background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800'); background-size: cover; padding: 30px 15px; text-align: center; border-bottom: 2px solid var(--gold); }
-        .balance-card { background: var(--card); margin: -20px 15px 15px; padding: 20px; border-radius: 12px; border: 1px solid #333; }
-        .balance-card b { font-size: 26px; color: var(--gold); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
 
-        /* VIP LIST */
-        .vip-container { padding: 10px; }
-        .vip-card { background: #111; border-radius: 10px; margin-bottom: 12px; display: flex; border: 1px solid #222; overflow: hidden; position: relative; }
-        .vip-badge { position: absolute; top: 0; left: 0; background: var(--gold); color: black; padding: 2px 8px; font-weight: bold; font-size: 12px; }
-        .vip-img { width: 100px; height: 100px; object-fit: cover; }
-        .vip-info { padding: 10px; flex: 1; }
-        
-        /* GOPAY STYLES */
-        .gopay-box { background: white; color: black; border-radius: 15px; padding: 15px; margin: 10px; }
-        .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .amt-btn { background: var(--orange); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        /* HEADER SERVICES STYLE EDF */
+        .top-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #fff;
+            padding: 20px 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .nav-item img { width: 35px; height: 35px; margin-bottom: 5px; }
+        .nav-item span { display: block; font-size: 10px; font-weight: bold; color: #555; }
 
-        /* NAV */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; }
-        .nav-item { text-align: center; color: #666; font-size: 11px; cursor: pointer; }
-        .nav-item.active { color: var(--gold); }
-        .nav-item i { display: block; font-size: 20px; margin-bottom: 3px; }
+        /* BANNIÈRE TÉLÉGRAM */
+        .tg-banner {
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            margin: 15px;
+            padding: 25px;
+            border-radius: 15px;
+            color: #fff;
+            text-align: center;
+        }
+        .btn-tg {
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+        }
 
-        .btn-gold { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        /* SECTION INVESTISSEMENT */
+        .section-title { padding: 15px; font-size: 18px; font-weight: bold; color: #222; }
+        .product-card {
+            background: #fff;
+            margin: 10px 15px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .prod-img { width: 70px; height: 70px; background: #eee; border-radius: 12px; }
+        .prod-info { flex: 1; padding-left: 15px; }
+        .prod-info h4 { font-size: 15px; margin-bottom: 4px; }
+        .prod-info p { font-size: 12px; color: #777; }
+        .prod-info .profit { color: #d4af37; font-weight: bold; margin-top: 5px; }
+        .btn-buy { background: #d4af37; color: white; border: none; padding: 7px 15px; border-radius: 8px; font-size: 12px; }
+
+        /* MENU COMPTE STYLE PHOTO 3 */
+        .menu-box { background: #fff; margin: 15px; border-radius: 15px; overflow: hidden; }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 18px;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 14px;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .chevron { color: #ccc; }
+
+        .footer-logout {
+            display: block;
+            margin: 20px 15px;
+            background: #ff4444;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-page" style="padding: 40px 20px; text-align: center;">
-        <h1 style="letter-spacing: 10px; font-weight: 300;">DIOR</h1>
-        <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid var(--gold);">
-            <input type="number" id="auth-num" placeholder="Numéro de téléphone">
-            <input type="password" id="auth-pin" placeholder="Code secret (PIN)">
-            <input type="text" id="auth-ref" placeholder="Code parrainage (Optionnel)">
-            <button class="btn-gold" onclick="connexion()">ENTRER</button>
+    <div class="top-nav">
+        <div class="nav-item" onclick="alert('Lien Recharge')">
+            <img src="https://img.icons8.com/color/48/wallet--v1.png">
+            <span>RECHARGER</span>
+        </div>
+        <div class="nav-item" onclick="alert('Lien Retrait')">
+            <img src="https://img.icons8.com/color/48/get-cash.png">
+            <span>RETIRER</span>
+        </div>
+        <div class="nav-item" onclick="window.open('https://t.me/Dior_servic', '_blank')">
+            <img src="https://img.icons8.com/color/48/customer-support.png">
+            <span>SERVICE</span>
+        </div>
+        <div class="nav-item" onclick="alert('Bonus Journalier')">
+            <img src="https://img.icons8.com/color/48/calendar--v1.png">
+            <span>ENREG.</span>
         </div>
     </div>
 
-    <div id="app-content" class="hidden">
-        
-        <div id="p-home" class="view">
-            <div class="top-info"><h2>DIOR FASHION</h2></div>
-            <div class="balance-card">
-                <small>SOLDE TOTAL</small><br>
-                <b id="solde-val">0</b> <span style="color:var(--gold)">XOF</span>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-gold" style="flex:1" onclick="switchPage('recharge')">RECHARGE</button>
-                    <button class="btn-gold" style="flex:1; background:white" onclick="switchPage('retrait')">RETRAIT</button>
-                </div>
-            </div>
-
-            <div class="vip-container" id="vip-list-ui">
-                </div>
-        </div>
-
-        <div id="p-recharge" class="view hidden" style="padding: 15px;">
-            <h3 style="color:var(--orange)">GOPAY - RECHARGE BURKINA</h3>
-            <div class="amount-grid">
-                <button class="amt-btn" onclick="preparerPay(10000)">10 000</button>
-                <button class="amt-btn" onclick="preparerPay(30000)">30 000</button>
-                <button class="amt-btn" onclick="preparerPay(70000)">70 000</button>
-                <button class="amt-btn" onclick="preparerPay(140000)">140 000</button>
-                <button class="amt-btn" onclick="preparerPay(500000)">500 000</button>
-            </div>
-            <div id="pay-details" class="hidden" style="margin-top:20px; background:#222; padding:15px; border-radius:10px;">
-                <p>Envoyez au compte Orange : <br><b style="font-size:20px; color:var(--orange)">56024325</b></p>
-                <p>Montant : <b id="pay-amt">0</b> XOF</p>
-                <a id="ussd-link" href="#" style="background:var(--orange); color:white; padding:15px; display:block; text-align:center; border-radius:30px; text-decoration:none; font-weight:bold;">CLIQUER POUR PAYER</a>
-            </div>
-        </div>
-
-        <div id="p-retrait" class="view hidden" style="padding: 20px;">
-            <h3>DEMANDE DE RETRAIT</h3>
-            <div style="background:#111; padding:15px; border-radius:10px; border:1px solid #333;">
-                <input type="number" id="retrait-amt" placeholder="Montant à retirer">
-                <input type="number" id="retrait-num" placeholder="Numéro Orange/Moov">
-                <button class="btn-gold" onclick="alert('Demande de retrait envoyée !')">VALIDER LE RETRAIT</button>
-            </div>
-        </div>
-
-        <nav class="nav-bar">
-            <div class="nav-item active" onclick="switchPage('home')"><i class="fas fa-home"></i>Accueil</div>
-            <div class="nav-item" onclick="switchPage('recharge')"><i class="fas fa-wallet"></i>Dépôt</div>
-            <div class="nav-item" onclick="switchPage('retrait')"><i class="fas fa-arrow-down"></i>Retrait</div>
-            <div class="nav-item" onclick="location.reload()"><i class="fas fa-user"></i>Profil</div>
-        </nav>
+    <div class="tg-banner">
+        <h3>GROUPE OFFICIEL DIOR</h3>
+        <p>Rejoignez-nous pour les codes cadeaux</p>
+        <button class="btn-tg" onclick="window.open('https://t.me/+ONx7pIapuKxhNWU8', '_blank')">OUVRIR</button>
     </div>
 
-<script>
-    // Config Supabase
-    const SURL = "https://ciamfmmmznshnmmtxntf.supabase.co";
-    const SKEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
-    const _sb = supabase.createClient(SURL, SKEY);
+    <h2 class="section-title">Produits Dior</h2>
+    
+    <div class="product-card">
+        <div class="prod-img"></div>
+        <div class="prod-info">
+            <h4>Dior Luxury S0</h4>
+            <p>Prix: 0 XOF</p>
+            <p class="profit">Gain: 200 XOF / Jour</p>
+        </div>
+        <button class="btn-buy">Acheter</button>
+    </div>
 
-    let user = null;
+    <div class="product-card">
+        <div class="prod-img"></div>
+        <div class="prod-info">
+            <h4>Dior Luxury S1</h4>
+            <p>Prix: 10 000 XOF</p>
+            <p class="profit">Gain: 500 XOF / Jour</p>
+        </div>
+        <button class="btn-buy">Acheter</button>
+    </div>
 
-    // Tableau des VIP
-    const VIP_DATA = [
-        { lv: "S0", prix: 0, gain: 200, img: "https://images.unsplash.com/photo-1591360236480-4ed861025fa1?w=200" },
-        { lv: "S1", prix: 10000, gain: 500, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200" },
-        { lv: "S2", prix: 30000, gain: 1515, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200" },
-        { lv: "S3", prix: 70000, gain: 3571, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200" },
-        { lv: "S4", prix: 140000, gain: 7216, img: "https://images.unsplash.com/photo-1591360236480-4ed861025fa1?w=200" }
-    ];
+    <h2 class="section-title">Mon Équipe</h2>
+    <div class="menu-box">
+        <div class="menu-item" onclick="copyLink()">
+            <span>Lien d'invitation (25% L1)</span>
+            <span style="color:#ff6600">COPIER</span>
+        </div>
+    </div>
 
-    async function connexion() {
-        const num = document.getElementById('auth-num').value;
-        const pin = document.getElementById('auth-pin').value;
-        const ref = document.getElementById('auth-ref').value;
+    <h2 class="section-title">Mon Compte</h2>
+    <div class="menu-box">
+        <div class="menu-item"><span>À propos de nous</span><span class="chevron">></span></div>
+        <div class="menu-item"><span>Historique transactions</span><span class="chevron">></span></div>
+        <div class="menu-item"><span>MDP transaction</span><span class="chevron">></span></div>
+        <div class="menu-item"><span>Lier carte bancaire</span><span class="chevron">></span></div>
+        <div class="menu-item"><span>Code cadeau</span><span class="chevron">></span></div>
+    </div>
 
-        let { data, error } = await _sb.from('utilisateurs').select('*').eq('numero', num).eq('pin', pin).single();
+    <a href="#" class="footer-logout">DÉCONNEXION</a>
 
-        if (data) {
-            startApp(data);
-        } else {
-            const { data: nUser, error: e2 } = await _sb.from('utilisateurs').insert([
-                { numero: num, pin: pin, solde: 500, invite_par: ref, last_claim: new Date().toISOString() }
-            ]).select().single();
-            if(!e2) startApp(nUser); else alert("Erreur: " + e2.message);
+    <script>
+        function copyLink() {
+            const myNum = "VOTRE_NUMERO"; 
+            const link = "https://mon-app-dior2026.vercel.app/signup?ref=" + myNum;
+            navigator.clipboard.writeText(link);
+            alert("Lien copié !");
         }
-    }
-
-    function startApp(uData) {
-        user = uData;
-        document.getElementById('auth-page').classList.add('hidden');
-        document.getElementById('app-content').classList.remove('hidden');
-        updateUI();
-        renderVIPs();
-        checkDailyEarnings();
-    }
-
-    function renderVIPs() {
-        const container = document.getElementById('vip-list-ui');
-        container.innerHTML = VIP_DATA.map(v => `
-            <div class="vip-card">
-                <div class="vip-badge">${v.lv}</div>
-                <img src="${v.img}" class="vip-img">
-                <div class="vip-info">
-                    <b>Dior Luxury - ${v.lv}</b><br>
-                    <small>Prix: ${v.prix} XOF</small><br>
-                    <span style="color:var(--gold)">Gain: ${v.gain} XOF / jour</span>
-                    <button class="btn-gold" style="margin-top:5px; height:30px; padding:0;" onclick="acheterVIP('${v.lv}', ${v.prix})">Investir</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    async function acheterVIP(lv, prix) {
-        if(user.solde < prix) return alert("Solde insuffisant ! Allez à Recharge.");
-        const nSolde = user.solde - prix;
-        const { error } = await _sb.from('utilisateurs').update({ solde: nSolde, vip_actif: lv }).eq('id', user.id);
-        if(!error) { alert("Félicitations ! VIP " + lv + " activé."); user.solde = nSolde; updateUI(); }
-    }
-
-    // Système automatique 24h
-    async function checkDailyEarnings() {
-        if(!user.vip_actif || user.vip_actif == "Aucun") return;
-        
-        const last = new Date(user.last_claim);
-        const now = new Date();
-        const diffHours = (now - last) / (1000 * 60 * 60);
-
-        if(diffHours >= 24) {
-            const vip = VIP_DATA.find(v => v.lv === user.vip_actif);
-            const nSolde = user.solde + vip.gain;
-            await _sb.from('utilisateurs').update({ solde: nSolde, last_claim: now.toISOString() }).eq('id', user.id);
-            alert("Revenu quotidien de " + vip.gain + " XOF ajouté !");
-            user.solde = nSolde;
-            updateUI();
-        }
-    }
-
-    function preparerPay(amt) {
-        document.getElementById('pay-details').classList.remove('hidden');
-        document.getElementById('pay-amt').innerText = amt;
-        document.getElementById('ussd-link').href = "tel:*144*2*1*56024325*" + amt + "%23";
-    }
-
-    function updateUI() { document.getElementById('solde-val').innerText = user.solde; }
-
-    function switchPage(p) {
-        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('p-' + p).classList.remove('hidden');
-    }
-</script>
+    </script>
 </body>
 </html>
-/* RESET ET BASE */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-body { background-color: #f4f7f6; color: #333; padding-bottom: 80px; }
-
-/* BARRE DE SERVICES SUPÉRIEURE (STYLE EDF) */
-.top-services {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    background: #ffffff;
-    padding: 20px 10px;
-    margin: 10px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.service-item img { width: 40px; height: 40px; margin-bottom: 8px; }
-.service-item span { font-size: 10px; font-weight: bold; color: #444; }
-
-/* BANNIÈRE TÉLÉGRAM PROFESSIONNELLE */
-.telegram-card {
-    background: linear-gradient(135deg, #1a1a1a 0%, #444 100%);
-    margin: 10px;
-    padding: 25px;
-    border-radius: 15px;
-    color: white;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-.telegram-card h3 { font-size: 16px; margin-bottom: 10px; }
-.btn-open {
-    background: #ff6600;
-    color: white;
-    border: none;
-    padding: 10px 30px;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-/* LISTE DES PRODUITS DIOR LUXURY */
-.section-title { padding: 15px; font-size: 18px; font-weight: bold; }
-.product-grid { padding: 10px; }
-.product-card {
-    background: white;
-    border-radius: 15px;
-    display: flex;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    align-items: center;
-}
-.product-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; background: #eee; }
-.product-info { flex: 1; padding-left: 15px; }
-.product-info h4 { font-size: 15px; margin-bottom: 5px; }
-.product-info p { font-size: 13px; color: #666; }
-.product-info .gain { color: #ff9900; font-weight: bold; margin: 5px 0; }
-.invest-btn {
-    background: #d4af37;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-/* MENU COMPTE (STYLE PHOTO 3) */
-.account-box { background: white; margin: 10px; border-radius: 15px; overflow: hidden; }
-.menu-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 18px;
-    border-bottom: 1px solid #f0f0f0;
-    align-items: center;
-    cursor: pointer;
-}
-.menu-row span { font-size: 14px; color: #333; }
-.menu-row i { color: #ccc; font-style: normal; }
-.btn-logout {
-    display: block;
-    width: calc(100% - 20px);
-    margin: 20px 10px;
-    background: #ff4444;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: bold;
-}
