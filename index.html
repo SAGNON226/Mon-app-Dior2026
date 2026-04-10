@@ -199,3 +199,94 @@
 </script>
 </body>
 </html>
+/* RESET ET BASE */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+body { background-color: #f4f7f6; color: #333; padding-bottom: 80px; }
+
+/* BARRE DE SERVICES SUPÉRIEURE (STYLE EDF) */
+.top-services {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #ffffff;
+    padding: 20px 10px;
+    margin: 10px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.service-item img { width: 40px; height: 40px; margin-bottom: 8px; }
+.service-item span { font-size: 10px; font-weight: bold; color: #444; }
+
+/* BANNIÈRE TÉLÉGRAM PROFESSIONNELLE */
+.telegram-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #444 100%);
+    margin: 10px;
+    padding: 25px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.telegram-card h3 { font-size: 16px; margin-bottom: 10px; }
+.btn-open {
+    background: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* LISTE DES PRODUITS DIOR LUXURY */
+.section-title { padding: 15px; font-size: 18px; font-weight: bold; }
+.product-grid { padding: 10px; }
+.product-card {
+    background: white;
+    border-radius: 15px;
+    display: flex;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    align-items: center;
+}
+.product-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; background: #eee; }
+.product-info { flex: 1; padding-left: 15px; }
+.product-info h4 { font-size: 15px; margin-bottom: 5px; }
+.product-info p { font-size: 13px; color: #666; }
+.product-info .gain { color: #ff9900; font-weight: bold; margin: 5px 0; }
+.invest-btn {
+    background: #d4af37;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* MENU COMPTE (STYLE PHOTO 3) */
+.account-box { background: white; margin: 10px; border-radius: 15px; overflow: hidden; }
+.menu-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+    cursor: pointer;
+}
+.menu-row span { font-size: 14px; color: #333; }
+.menu-row i { color: #ccc; font-style: normal; }
+.btn-logout {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 20px 10px;
+    background: #ff4444;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+}
