@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dior2026 - Plateforme Officielle</title>
+    <title>Dior2026 - Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --dior-gold: #e88e0c; }
-        body { font-family: sans-serif; background: #f8f9fa; }
-        .page { display: none; padding-bottom: 90px; animation: fadeIn 0.3s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body { font-family: sans-serif; background: #f8f9fa; margin: 0; }
+        .page { display: none; padding-bottom: 90px; }
+        .active { display: block !important; }
+        .auth-screen { background: white; min-height: 100vh; }
+        input::placeholder { color: #cbd5e1; }
         #loader {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             z-index: 10000; justify-content: center; align-items: center; color: white; flex-direction: column;
@@ -22,245 +23,169 @@
 
 <div id="loader">
     <div class="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p>Traitement...</p>
+    <p>Chargement...</p>
 </div>
 
-<div class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative">
+<div class="max-w-md mx-auto min-h-screen shadow-2xl relative bg-white">
 
-    <div id="accueil" class="page active">
-        <div class="relative h-52 bg-zinc-900 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1546483875-5f0127521197?auto=format&fit=crop&w=500" class="w-full h-full object-cover opacity-60">
-            <div class="absolute inset-0 flex flex-col justify-end p-5 text-white">
+    <div id="register-page" class="page active auth-screen">
+        <div class="relative h-64 bg-zinc-900">
+            <img src="https://images.unsplash.com/photo-1509391366360-fe5bb629550c?q=80&w=500" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-6">
+                <h1 class="text-4xl font-black italic tracking-tighter">Jinko<span class="text-green-500 italic">Solar</span></h1>
+                <p class="text-[10px] uppercase tracking-[0.3em] mt-2 opacity-80 font-bold">Plateforme Dior2026</p>
+            </div>
+        </div>
+        <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 space-y-5">
+            <div class="flex items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <div class="flex items-center gap-2 pr-4 border-r border-gray-200 text-sm font-bold text-gray-600">+226</div>
+                <input id="reg-phone" type="tel" placeholder="Numéro de téléphone" class="flex-1 bg-transparent px-4 outline-none text-sm font-medium">
+            </div>
+            <div class="flex items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <i class="fas fa-lock text-gray-400 text-sm mr-4"></i>
+                <input id="reg-pass" type="password" placeholder="Mot de passe" class="flex-1 bg-transparent outline-none text-sm font-medium">
+            </div>
+            <div class="flex items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <i class="fas fa-user-plus text-gray-400 text-sm mr-4"></i>
+                <input id="reg-invite" type="text" value="3vo902" readonly class="flex-1 bg-transparent outline-none text-sm font-bold text-orange-500">
+            </div>
+            <button onclick="handleAuth('register')" class="w-full bg-green-500 text-white py-5 rounded-3xl font-black shadow-lg shadow-green-200">Autoriser</button>
+            <button onclick="showAuth('login-page')" class="w-full border-2 border-red-500 text-red-500 py-4 rounded-3xl font-bold text-sm">J'ai un compte</button>
+        </div>
+    </div>
+
+    <div id="login-page" class="page auth-screen">
+        <div class="p-10 pt-20 text-center">
+            <div class="w-20 h-20 bg-zinc-900 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-xl"><i class="fas fa-bolt text-green-500 text-3xl"></i></div>
+            <h2 class="text-2xl font-black text-gray-800 uppercase">Connexion</h2>
+            <p class="text-gray-400 text-[10px] mt-2 font-bold tracking-widest uppercase">Accès Dior2026</p>
+        </div>
+        <div class="p-8 space-y-4">
+            <input id="login-phone" type="tel" placeholder="Numéro de téléphone" class="w-full p-4 bg-gray-50 rounded-2xl border border-gray-100 outline-none text-sm">
+            <input id="login-pass" type="password" placeholder="Mot de passe" class="w-full p-4 bg-gray-50 rounded-2xl border border-gray-100 outline-none text-sm">
+            <button onclick="handleAuth('login')" class="w-full bg-zinc-900 text-white py-5 rounded-3xl font-black shadow-xl mt-4">Se connecter</button>
+            <p onclick="showAuth('register-page')" class="text-center text-[10px] text-gray-400 font-black mt-6 cursor-pointer uppercase tracking-widest">Créer un compte</p>
+        </div>
+    </div>
+
+    <div id="home-page" class="page">
+        <div class="relative h-52 bg-zinc-900">
+            <img src="https://images.unsplash.com/photo-1546483875-5f0127521197?auto=format&fit=crop&w=500" class="w-full h-full object-cover opacity-50">
+            <div class="absolute inset-0 p-5 flex flex-col justify-end text-white">
                 <h1 class="text-lg font-bold">Casques conçus pour le sport</h1>
-                <p class="text-[10px] opacity-80">Achetez pour obtenir des rendements élevés</p>
-                <button onclick="showPage('produit')" class="mt-3 bg-white/20 backdrop-blur px-5 py-2 rounded-full border border-white/30 text-[10px] font-bold w-max">Acheter</button>
+                <p class="text-[9px] opacity-70">Achetez pour obtenir des rendements élevés</p>
             </div>
         </div>
-
-        <div class="grid grid-cols-4 gap-2 p-4 text-center text-[10px] font-bold text-gray-500">
-            <div onclick="showPage('recharge')"><div class="bg-gray-100 p-3 rounded-2xl mb-1 flex justify-center"><i class="fas fa-coins text-lg text-yellow-600"></i></div> Recharger</div>
-            <div onclick="showPage('retrait-step1')"><div class="bg-gray-100 p-3 rounded-2xl mb-1 flex justify-center"><i class="fas fa-money-bill-transfer text-lg text-blue-600"></i></div> Retirer</div>
-            <div><div class="bg-gray-100 p-3 rounded-2xl mb-1 flex justify-center"><i class="fas fa-headset text-lg text-green-600"></i></div> Service</div>
-            <div onclick="pointageQuotidien()"><div class="bg-gray-100 p-3 rounded-2xl mb-1 flex justify-center"><i class="fas fa-calendar-check text-lg text-purple-600"></i></div> Pointage</div>
+        <div class="grid grid-cols-4 gap-2 p-4 text-[9px] font-bold text-gray-500 text-center">
+            <div onclick="alert('Bientôt disponible')"><div class="bg-gray-100 p-3 rounded-2xl mb-1"><i class="fas fa-coins text-yellow-600"></i></div> Recharger</div>
+            <div onclick="showPage('retrait-page')"><div class="bg-gray-100 p-3 rounded-2xl mb-1"><i class="fas fa-wallet text-blue-600"></i></div> Retirer</div>
+            <div><div class="bg-gray-100 p-3 rounded-2xl mb-1"><i class="fas fa-headset text-green-600"></i></div> Service</div>
+            <div onclick="doPointage()"><div class="bg-gray-100 p-3 rounded-2xl mb-1"><i class="fas fa-calendar-check text-purple-600"></i></div> Pointage</div>
         </div>
-
-        <div class="px-4 flex gap-3">
-            <div class="flex-1 bg-zinc-800 p-4 rounded-3xl text-white">
-                <p class="text-[9px] opacity-50 uppercase">Solde</p>
-                <h2 class="text-xl font-black text-orange-500"><span class="solde-val">1000</span> <span class="text-[10px]">FCFA</span></h2>
-            </div>
-            <div class="flex-1 bg-gray-100 p-4 rounded-3xl">
-                <p class="text-[9px] opacity-50 uppercase">Retraits</p>
-                <h2 class="text-xl font-black text-gray-800">0 <span class="text-[10px]">FCFA</span></h2>
-            </div>
+        <div class="px-4 grid grid-cols-2 gap-3">
+            <div class="bg-zinc-900 p-4 rounded-3xl text-white"><p class="text-[8px] opacity-50 uppercase">Solde</p><h2 class="text-xl font-black text-orange-500"><span class="solde-val">1000</span> F</h2></div>
+            <div class="bg-gray-100 p-4 rounded-3xl"><p class="text-[8px] opacity-50 uppercase">Retraits</p><h2 class="text-xl font-black">0 F</h2></div>
         </div>
     </div>
 
-    <div id="produit" class="page p-4">
-        <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fas fa-gem text-orange-500"></i> Liste des produits</h2>
-        <div class="space-y-4">
-            <div class="bg-white border rounded-3xl p-4 shadow-sm">
-                <p class="text-center text-xs font-bold text-gray-400 mb-2">VIP1 SHOKZ OpenRun</p>
-                <div class="flex justify-center bg-gray-50 rounded-2xl p-4 mb-3">
-                    <img src="https://m.media-amazon.com/images/I/51r2X7yN6FL._AC_SL1500_.jpg" class="h-20">
-                </div>
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-blue-600 font-black text-lg">FCFA 3,500</span>
-                    <button onclick="acheterProduit(3500, 700)" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold">ACHETER</button>
-                </div>
-                <div class="grid grid-cols-2 text-[10px] gap-y-1 border-t pt-3">
-                    <span class="text-gray-400">Durée :</span><span class="text-right font-bold">90 j</span>
-                    <span class="text-gray-400">Revenu quotidien :</span><span class="text-right font-bold text-green-600">FCFA 700</span>
-                    <span class="text-gray-400">Revenu total :</span><span class="text-right font-bold text-orange-600">FCFA 63,000</span>
-                </div>
-            </div>
-
-            <div class="bg-white border rounded-3xl p-4 shadow-sm">
-                <p class="text-center text-xs font-bold text-gray-400 mb-2">VIP3 SHOKZ OpenRun</p>
-                <div class="flex justify-center bg-gray-50 rounded-2xl p-4 mb-3">
-                    <img src="https://m.media-amazon.com/images/I/61L2Uf-v2fL._AC_SL1500_.jpg" class="h-20">
-                </div>
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-blue-600 font-black text-lg">FCFA 15,000</span>
-                    <button onclick="acheterProduit(15000, 3150)" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold">ACHETER</button>
-                </div>
-                <div class="grid grid-cols-2 text-[10px] gap-y-1 border-t pt-3">
-                    <span class="text-gray-400">Durée :</span><span class="text-right font-bold">90 j</span>
-                    <span class="text-gray-400">Revenu quotidien :</span><span class="text-right font-bold text-green-600">FCFA 3,150</span>
-                    <span class="text-gray-400">Revenu total :</span><span class="text-right font-bold text-orange-600">FCFA 283,500</span>
-                </div>
-            </div>
-
-            <div class="bg-white border rounded-3xl p-4 shadow-sm">
-                <p class="text-center text-xs font-bold text-gray-400 mb-2">VIP5 SHOKZ OpenRun</p>
-                <div class="flex justify-center bg-gray-50 rounded-2xl p-4 mb-3">
-                    <img src="https://m.media-amazon.com/images/I/51Wp8yY7P6L._AC_SL1000_.jpg" class="h-20">
-                </div>
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-blue-600 font-black text-lg">FCFA 100,000</span>
-                    <button onclick="acheterProduit(100000, 22000)" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold">ACHETER</button>
-                </div>
-                <div class="grid grid-cols-2 text-[10px] gap-y-1 border-t pt-3">
-                    <span class="text-gray-400">Durée :</span><span class="text-right font-bold">90 j</span>
-                    <span class="text-gray-400">Revenu quotidien :</span><span class="text-right font-bold text-green-600">FCFA 22,000</span>
-                    <span class="text-gray-400">Revenu total :</span><span class="text-right font-bold text-orange-600">FCFA 1,980,000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="equipe" class="page">
-        <div class="bg-zinc-900 p-6 text-white pb-14 rounded-b-[40px] relative">
+    <div id="team-page" class="page">
+        <div class="bg-zinc-900 p-6 pb-14 rounded-b-[40px] text-white">
             <h2 class="text-xl font-bold mb-6">Équipe</h2>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div><p class="text-[10px] text-gray-400">Récompenses ></p><h3 class="text-lg font-bold">FCFA 0</h3></div>
-                <div><p class="text-[10px] text-gray-400">Membres ></p><h3 class="text-lg font-bold">0</h3></div>
+            <div class="bg-white/10 p-4 rounded-2xl border border-white/10 mb-4">
+                <p class="text-[8px] text-gray-400 uppercase">Lien d'invitation</p>
+                <p class="text-[10px] text-blue-400 truncate">https://dior2026.com/reg?code=3vo902</p>
             </div>
-            <div class="space-y-3">
-                <div class="bg-white/10 p-3 rounded-xl flex justify-between items-center">
-                    <div><p class="text-[8px] uppercase">Code</p><p class="font-bold">3vo902</p></div>
-                    <button class="bg-white text-black text-[9px] px-3 py-1 rounded-md font-bold">COPIER</button>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="bg-orange-500/20 p-3 rounded-xl text-center border border-orange-500/30">
+                    <p class="font-black text-orange-500">27%</p><p class="text-[8px] uppercase">L1</p>
                 </div>
-                <div class="bg-white/10 p-3 rounded-xl flex justify-between items-center">
-                    <div class="truncate mr-2"><p class="text-[8px] uppercase">Lien</p><p class="text-[9px] text-blue-300">https://openrun-sokz.com/reg?code=3vo902</p></div>
-                    <button class="bg-white text-black text-[9px] px-3 py-1 rounded-md font-bold">COPIER</button>
+                <div class="bg-blue-500/20 p-3 rounded-xl text-center border border-blue-500/30">
+                    <p class="font-black text-blue-500">2%</p><p class="text-[8px] uppercase">L2</p>
                 </div>
-            </div>
-        </div>
-        <div class="px-6 -mt-6">
-            <div class="bg-white shadow-md p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between text-xs border-b pb-2"><span class="text-orange-500 font-bold">Lv1 : 30% Commission</span><span class="text-gray-400">0 Membres</span></div>
-                <div class="flex justify-between text-xs"><span class="text-blue-500 font-bold">Lv2 : 3% Commission</span><span class="text-gray-400">0 Membres</span></div>
+                <div class="bg-purple-500/20 p-3 rounded-xl text-center border border-purple-500/30">
+                    <p class="font-black text-purple-500">1%</p><p class="text-[8px] uppercase">L3</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="profil-page" class="page">
-        <div class="p-6 bg-white border-b flex items-center gap-4">
-            <div class="w-14 h-14 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">S</div>
-            <div><h3 class="font-bold">Sagnon Gaoussou</h3><p class="text-[10px] text-gray-400 italic">Dior2026 Membre</p></div>
+    <div id="retrait-page" class="page p-6">
+        <div class="flex items-center gap-4 mb-8"><i class="fas fa-arrow-left" onclick="showPage('home-page')"></i><h2 class="font-bold">Retrait</h2></div>
+        <div class="text-center mb-8">
+            <p class="text-[10px] text-gray-400 mb-1">MON SOLDE</p>
+            <h1 class="text-4xl font-black text-zinc-800"><span class="solde-val">1000</span> FCFA</h1>
         </div>
-        <div class="p-6 grid grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-2xl">
-                <p class="text-[9px] text-gray-400 mb-1">SOLDE DU COMPTE</p>
-                <h4 class="font-bold solde-val text-zinc-800">1000</h4>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-2xl">
-                <p class="text-[9px] text-gray-400 mb-1">REVENUS CUMULÉS</p>
-                <h4 class="font-bold text-zinc-800">1000</h4>
-            </div>
+        <div class="space-y-4">
+            <input id="draw-amount" type="number" placeholder="Saisissez le montant" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-none text-sm">
+            <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-[10px] font-bold text-blue-700">Burkina Faso_ORANGE - 54685433</div>
+            <button onclick="finalRetrait()" class="w-full bg-black text-white py-5 rounded-2xl font-black">Confirmer</button>
         </div>
-        <div class="px-6 space-y-4 text-sm text-gray-600">
-            <div onclick="showPage('retrait-step2')" class="flex justify-between border-b pb-3 items-center"><span><i class="fas fa-credit-card mr-3"></i> Lier une carte</span><i class="fas fa-chevron-right text-[10px]"></i></div>
-            <div class="flex justify-between border-b pb-3 items-center"><span><i class="fas fa-history mr-3"></i> Historique</span><i class="fas fa-chevron-right text-[10px]"></i></div>
-            <div class="flex justify-between border-b pb-3 items-center"><span><i class="fas fa-lock mr-3"></i> Mot de passe</span><i class="fas fa-chevron-right text-[10px]"></i></div>
-            <div class="text-center text-red-500 font-bold pt-10 text-[10px] tracking-widest uppercase">Déconnexion</div>
-        </div>
-    </div>
-
-    <div id="retrait-step1" class="page p-6">
-        <div class="flex items-center gap-4 mb-10"><i class="fas fa-arrow-left" onclick="showPage('accueil')"></i><h2 class="font-bold">Retrait</h2></div>
-        <div class="text-center mb-10">
-            <p class="text-[10px] text-gray-400 mb-2">SOLDE ACTUEL</p>
-            <h1 class="text-3xl font-black solde-val">1000</h1>
-            <img src="https://shokz.com/cdn/shop/files/OpenRun_Pro_2_Black_1.png" class="h-24 mx-auto my-6 opacity-20">
-        </div>
-        <div id="card-box" onclick="showPage('retrait-step2')" class="border-2 border-dashed border-gray-200 p-5 rounded-2xl text-center text-gray-400 italic text-xs">
-            <span id="card-status">Cliquer pour lier une carte de paiement</span>
-        </div>
-        <div class="mt-10 text-[9px] text-gray-400 leading-relaxed bg-gray-50 p-4 rounded-xl">
+        <div class="mt-8 text-[9px] text-gray-400 space-y-1 bg-gray-50 p-4 rounded-2xl">
             <p>1. Minimum : 1 000 FCFA</p>
             <p>2. Frais : 20%</p>
-            <p>3. Délai : 4 à 24 heures</p>
+            <p>3. Délais : 4 à 24 heures</p>
         </div>
     </div>
 
-    <div id="retrait-step2" class="page p-6">
-        <div class="flex items-center gap-4 mb-6"><i class="fas fa-arrow-left" onclick="showPage('retrait-step1')"></i><h2 class="font-bold text-sm">Lier une carte</h2></div>
-        <img src="https://images.unsplash.com/photo-1549416805-0e3f22557458?auto=format&fit=crop&w=500" class="w-full h-32 object-cover rounded-2xl mb-6">
-        <div class="space-y-4">
-            <select id="bank-name" class="w-full p-4 bg-gray-50 rounded-xl font-bold text-xs"><option value="">* Sélectionner une banque (Orange/Moov)</option><option>Orange Money</option><option>Moov Money</option></select>
-            <input id="bank-user" type="text" placeholder="* Titulaire du compte (Nom)" class="w-full p-4 bg-gray-50 rounded-xl text-xs">
-            <input id="bank-number" type="number" placeholder="* Compte bancaire (Numéro)" class="w-full p-4 bg-gray-50 rounded-xl text-xs">
-            <button onclick="confirmerLiaison()" class="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold text-xs">Confirmer</button>
-        </div>
-    </div>
-
-    <div id="retrait-step3" class="page p-6">
-        <div class="flex items-center gap-4 mb-10"><i class="fas fa-arrow-left" onclick="showPage('retrait-step1')"></i><h2 class="font-bold text-sm">Montant retrait</h2></div>
-        <div class="text-center border-b-2 pb-2 mb-10"><span class="font-bold">FCFA</span> <input id="withdraw-amount" type="number" placeholder="00.00" class="text-3xl font-black w-32 outline-none"></div>
-        <div id="linked-card-display" class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-blue-700 text-[10px] font-bold mb-8">ORANGE - 00000000</div>
-        <button onclick="finaliserRetrait()" class="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold text-xs">Confirmer le retrait</button>
-    </div>
-
-    <nav class="fixed bottom-0 w-full max-w-md bg-white border-t flex justify-around py-4 z-50">
-        <button onclick="showPage('accueil')" class="flex flex-col items-center text-orange-500"><i class="fas fa-home"></i><span class="text-[9px] font-bold">Accueil</span></button>
-        <button onclick="showPage('produit')" class="flex flex-col items-center text-gray-300"><i class="fas fa-shopping-bag"></i><span class="text-[9px] font-bold">Produit</span></button>
-        <button onclick="showPage('equipe')" class="flex flex-col items-center text-gray-300"><i class="fas fa-users"></i><span class="text-[9px] font-bold">Équipe</span></button>
-        <button onclick="showPage('profil-page')" class="flex flex-col items-center text-gray-300"><i class="fas fa-user"></i><span class="text-[9px] font-bold">Profil</span></button>
+    <nav id="main-nav" class="fixed bottom-0 w-full max-w-md bg-white border-t flex justify-around py-4 z-50 hidden">
+        <button onclick="showPage('home-page')" class="flex flex-col items-center text-orange-500"><i class="fas fa-home"></i><span class="text-[9px] font-bold">Accueil</span></button>
+        <button onclick="alert('Produits VIP 1-6')" class="flex flex-col items-center text-gray-300"><i class="fas fa-box"></i><span class="text-[9px] font-bold">Produit</span></button>
+        <button onclick="showPage('team-page')" class="flex flex-col items-center text-gray-300"><i class="fas fa-users"></i><span class="text-[9px] font-bold">Équipe</span></button>
+        <button onclick="alert('Profil')" class="flex flex-col items-center text-gray-300"><i class="fas fa-user"></i><span class="text-[9px] font-bold">Profil</span></button>
     </nav>
 </div>
 
 <script>
     let solde = 1000;
-    let carteLiee = null;
 
-    function updateUI() {
-        document.querySelectorAll('.solde-val').forEach(el => el.innerText = solde);
-        if(carteLiee) {
-            document.getElementById('card-status').innerText = `${carteLiee.bank} - ${carteLiee.number}`;
-            document.getElementById('linked-card-display').innerText = `Burkina Faso_${carteLiee.bank} - ${carteLiee.number}`;
-            document.getElementById('card-box').onclick = () => showPage('retrait-step3');
+    function showAuth(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function handleAuth(type) {
+        const phone = type === 'register' ? document.getElementById('reg-phone').value : document.getElementById('login-phone').value;
+        const pass = type === 'register' ? document.getElementById('reg-pass').value : document.getElementById('login-pass').value;
+
+        if(!phone || !pass) return alert("Remplissez les champs !");
+
+        if(type === 'register') {
+            if(localStorage.getItem('u_'+phone)) return alert("Numéro déjà inscrit !");
+            localStorage.setItem('u_'+phone, pass);
+            alert("✅ Inscription Dior2026 réussie !");
+        } else {
+            if(localStorage.getItem('u_'+phone) !== pass) return alert("Identifiants incorrects.");
         }
+
+        document.getElementById('loader').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('main-nav').classList.remove('hidden');
+            showPage('home-page');
+        }, 1500);
     }
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
     }
 
-    function confirmerLiaison() {
-        const bank = document.getElementById('bank-name').value;
-        const name = document.getElementById('bank-user').value;
-        const num = document.getElementById('bank-number').value;
-        if(!bank || !name || !num) return alert("Remplissez tous les champs !");
-        carteLiee = { bank: bank, number: num };
-        updateUI();
-        showPage('retrait-step1');
+    function doPointage() {
+        solde += 50; updateUI();
+        alert("✅ +50 FCFA crédités !");
     }
 
-    function finaliserRetrait() {
-        const amt = document.getElementById('withdraw-amount').value;
-        if(amt < 1000 || amt > solde) return alert("Solde insuffisant ou montant invalide (min 1000).");
-        document.getElementById('loader').style.display = 'flex';
-        setTimeout(() => {
-            solde -= amt; updateUI();
-            document.getElementById('loader').style.display = 'none';
-            alert("✅ Demande envoyée !");
-            showPage('accueil');
-        }, 2000);
+    function finalRetrait() {
+        const amt = document.getElementById('draw-amount').value;
+        if(amt < 1000 || amt > solde) return alert("Montant invalide.");
+        solde -= amt; updateUI();
+        alert("✅ Demande de retrait Dior2026 envoyée !");
+        showPage('home-page');
     }
 
-    function pointageQuotidien() {
-        const last = localStorage.getItem('last_point');
-        const today = new Date().toDateString();
-        if(last === today) return alert("Vous avez déjà fait votre pointage aujourd'hui !");
-        solde += 50;
-        localStorage.setItem('last_point', today);
-        updateUI();
-        alert("✅ +50 FCFA ajoutés !");
+    function updateUI() {
+        document.querySelectorAll('.solde-val').forEach(el => el.innerText = solde);
     }
-
-    function acheterProduit(prix, gain) {
-        if(solde < prix) return alert("Solde insuffisant.");
-        solde -= prix; updateUI();
-        alert("✅ Achat réussi ! Revenu actif.");
-        setInterval(() => { solde += gain; updateUI(); }, 86400000);
-    }
-
-    updateUI();
 </script>
-
 </body>
 </html>
