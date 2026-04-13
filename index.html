@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dior2026 - Officiel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .page { display: none; padding-bottom: 100px; }
+        .active { display: block !important; }
+        .product-card { border: 1px solid #f3f4f6; border-radius: 2rem; overflow: hidden; background: white; }
+        .nav-active { color: #f97316 !important; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<div class="max-w-md mx-auto min-h-screen bg-white shadow-xl relative">
+
+    <div id="register-page" class="page active px-8 pt-10">
+        <h1 class="text-4xl font-black italic mb-8">DIOR<span class="text-orange-500">2026</span></h1>
+        <div class="space-y-4">
+            <input id="reg-phone" type="tel" placeholder="Téléphone (+226)" class="w-full p-4 bg-gray-100 rounded-2xl outline-none font-bold">
+            <input id="reg-pass" type="password" placeholder="Mot de passe" class="w-full p-4 bg-gray-100 rounded-2xl outline-none font-bold">
+            <input id="reg-invite" type="text" value="3vo902" readonly class="w-full p-4 bg-orange-50 text-orange-600 rounded-2xl font-black">
+            <button onclick="handleAuth('register')" class="w-full bg-black text-white py-4 rounded-2xl font-bold">S'INSCRIRE</button>
+            <p onclick="showPage('login-page')" class="text-center text-sm text-gray-500 cursor-pointer">J'ai déjà un compte</p>
+        </div>
+    </div>
+
+    <div id="login-page" class="page px-8 pt-10">
+        <h2 class="text-3xl font-black mb-8">CONNEXION</h2>
+        <div class="space-y-4">
+            <input id="login-phone" type="tel" placeholder="Téléphone" class="w-full p-4 bg-gray-100 rounded-2xl outline-none font-bold">
+            <input id="login-pass" type="password" placeholder="Mot de passe" class="w-full p-4 bg-gray-100 rounded-2xl outline-none font-bold">
+            <button onclick="handleAuth('login')" class="w-full bg-black text-white py-4 rounded-2xl font-bold">SE CONNECTER</button>
+            <p onclick="showPage('register-page')" class="text-center text-sm text-orange-500 cursor-pointer">Créer un compte</p>
+        </div>
+    </div>
+
+    <div id="home-page" class="page p-6">
+        <div class="bg-black p-8 rounded-[2rem] text-white mb-6">
+            <p class="text-xs opacity-50 uppercase tracking-widest mb-1">Solde Total</p>
+            <h2 class="text-4xl font-black text-orange-500"><span class="solde-val">0</span> F</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div onclick="doPointage()" class="bg-gray-100 p-4 rounded-2xl text-center font-bold"><i class="fas fa-calendar-check text-green-500 mb-2"></i><br>Pointage</div>
+            <div onclick="showPage('retrait-page')" class="bg-gray-100 p-4 rounded-2xl text-center font-bold"><i class="fas fa-wallet text-orange-500 mb-2"></i><br>Retrait</div>
+        </div>
+    </div>
+
+    <div id="produit-page" class="page p-6">
+        <h2 class="text-2xl font-black mb-6">Catalogue Dior</h2>
+        <div id="product-list" class="space-y-6">
+            <div class="product-card p-4">
+                <img src="https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=300" class="w-full h-32 object-cover rounded-xl mb-4">
+                <div class="flex justify-between items-center">
+                    <div><h3 class="font-bold">S0 - L'Atelier</h3><p class="text-orange-500 text-sm">Gratuit (200F/j)</p></div>
+                    <button id="btn-s0" onclick="acheterProduit('S0', 0, 200)" class="bg-black text-white px-4 py-2 rounded-xl text-xs">ACTIVER</button>
+                </div>
+            </div>
+            <div class="product-card p-4">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300" class="w-full h-32 object-cover rounded-xl mb-4">
+                <div class="flex justify-between items-center">
+                    <div><h3 class="font-bold">S1 - Derby</h3><p class="text-orange-500 text-sm">10,000 F (500F/j)</p></div>
+                    <button onclick="acheterProduit('S1', 10000, 500)" class="bg-black text-white px-4 py-2 rounded-xl text-xs">INVESTIR</button>
+                </div>
+            </div>
+            <div class="product-card p-4 bg-zinc-900 text-white">
+                <img src="https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=300" class="w-full h-32 object-cover rounded-xl mb-4 opacity-80">
+                <div class="flex justify-between items-center">
+                    <div><h3 class="font-bold">S10 - Parure</h3><p class="text-orange-500 text-sm">5,000,000 F (277,777F/j)</p></div>
+                    <button onclick="acheterProduit('S10', 5000000, 277777)" class="bg-orange-500 text-white px-4 py-2 rounded-xl text-xs">INVESTIR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="villas-page" class="page p-6">
+        <h2 class="text-2xl font-black mb-6">Mes Investissements</h2>
+        <div id="my-villas-list" class="space-y-4">
+            <p class="text-gray-400 text-center py-10">Aucun produit acheté</p>
+        </div>
+    </div>
+
+    <div id="team-page" class="page">
+        <div class="bg-black p-8 text-white rounded-b-[3rem] mb-6 text-center">
+            <p class="text-xs opacity-50 mb-2">VOTRE CODE</p>
+            <h3 id="user-code" class="text-3xl font-black text-orange-500">------</h3>
+        </div>
+        <div class="px-6 space-y-4">
+            <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span>Niveau L1 (27%)</span><b id="count-l1">0</b></div>
+            <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span>Niveau L2 (2%)</span><b id="count-l2">0</b></div>
+            <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span>Niveau L3 (1%)</span><b id="count-l3">0</b></div>
+        </div>
+    </div>
+
+    <div id="profil-page" class="page p-6 text-center">
+        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold">D</div>
+        <h3 id="prof-phone" class="text-xl font-bold">Utilisateur</h3>
+        <div class="mt-8 bg-gray-50 p-6 rounded-3xl">
+            <p class="text-xs text-gray-400 uppercase">Balance Actuelle</p>
+            <h2 class="text-4xl font-black"><span class="solde-val">0</span> F</h2>
+        </div>
+        <button onclick="location.reload()" class="mt-10 text-red-500 font-bold uppercase text-xs tracking-widest">Déconnexion</button>
+    </div>
+
+    <nav id="main-nav" class="fixed bottom-0 w-full max-w-md bg-white border-t flex justify-around py-4 hidden">
+        <button onclick="showPage('home-page')" class="nav-btn" data-page="home-page"><i class="fas fa-home"></i><br><span class="text-[10px]">Accueil</span></button>
+        <button onclick="showPage('produit-page')" class="nav-btn" data-page="produit-page"><i class="fas fa-store"></i><br><span class="text-[10px]">Produit</span></button>
+        <button onclick="showPage('villas-page')" class="nav-btn" data-page="villas-page"><i class="fas fa-hotel"></i><br><span class="text-[10px]">Villas</span></button>
+        <button onclick="showPage('team-page')" class="nav-btn" data-page="team-page"><i class="fas fa-users"></i><br><span class="text-[10px]">Équipe</span></button>
+        <button onclick="showPage('profil-page')" class="nav-btn" data-page="profil-page"><i class="fas fa-user text-orange-500"></i><br><span class="text-[10px]">Profil</span></button>
+    </nav>
+</div>
+
+<script>
+    let solde = 1000;
+    let currentPhone = "";
+    let myVillas = [];
+
+    function handleAuth(type) {
+        const phone = document.getElementById(type === 'register' ? 'reg-phone' : 'login-phone').value;
+        const pass = document.getElementById(type === 'register' ? 'reg-pass' : 'login-pass').value;
+
+        if(phone.length < 8) return alert("Numéro invalide");
+        
+        if(type === 'register') {
+            const user = { pass, balance: 1000, code: "DIOR" + Math.floor(1000 + Math.random() * 9000), villas: [] };
+            localStorage.setItem('dior_'+phone, JSON.stringify(user));
+            alert("Compte créé !");
+            showPage('login-page');
+        } else {
+            const data = localStorage.getItem('dior_'+phone);
+            if(data && JSON.parse(data).pass === pass) {
+                currentPhone = phone;
+                const user = JSON.parse(data);
+                solde = user.balance;
+                myVillas = user.villas || [];
+                document.getElementById('user-code').innerText = user.code;
+                document.getElementById('prof-phone').innerText = phone;
+                document.getElementById('main-nav').classList.remove('hidden');
+                updateUI();
+                showPage('home-page');
+            } else alert("Erreur identifiants");
+        }
+    }
+
+    function acheterProduit(nom, prix, gain) {
+        // Règle S0 : Une seule fois
+        if(nom === 'S0' && myVillas.some(v => v.nom === 'S0')) {
+            return alert("Vous avez déjà activé le produit gratuit !");
+        }
+
+        if(solde < prix) return alert("Solde insuffisant");
+
+        const achat = {
+            nom: nom,
+            prix: prix,
+            gain: gain,
+            date: new Date().toLocaleString('fr-FR'),
+            timestamp: Date.now()
+        };
+
+        solde -= prix;
+        myVillas.push(achat);
+        updateUI();
+        saveData();
+        alert("Félicitations ! Achat de " + nom + " réussi.");
+        if(nom === 'S0') document.getElementById('btn-s0').innerText = "ACTIVÉ";
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.solde-val').forEach(el => el.innerText = solde.toLocaleString());
+        
+        // Mise à jour de la liste Mes Villas
+        const list = document.getElementById('my-villas-list');
+        if(myVillas.length > 0) {
+            list.innerHTML = myVillas.map(v => `
+                <div class="bg-white border p-4 rounded-2xl shadow-sm">
+                    <div class="flex justify-between font-bold"><span>${v.nom}</span><span class="text-green-600">+${v.gain}F/j</span></div>
+                    <p class="text-[10px] text-gray-400 mt-1">Acheté le : ${v.date}</p>
+                    <div class="mt-2 text-[10px] bg-gray-50 p-2 rounded-lg">ID Transaction: ${v.timestamp}</div>
+                </div>
+            `).join('');
+        }
+    }
+
+    function saveData() {
+        const data = JSON.parse(localStorage.getItem('dior_'+currentPhone));
+        data.balance = solde;
+        data.villas = myVillas;
+        localStorage.setItem('dior_'+currentPhone, JSON.stringify(data));
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.toggle('nav-active', btn.getAttribute('data-page') === id);
+        });
+    }
+
+    function doPointage() {
+        solde += 50; updateUI(); saveData(); alert("Bonus pointage: +50F");
+    }
+</script>
+</body>
+</html>
