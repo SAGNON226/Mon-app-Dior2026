@@ -367,7 +367,7 @@
                 bankInfo: null
             };
 
-            const { error } = await _supabase.from('users').insert([newUser]);
+            const { error } = await _supabase.from('utilisateurs').insert([newUser]);
             
             document.getElementById('loader').style.display = 'none';
             if(error) return alert("Erreur d'inscription");
@@ -378,7 +378,7 @@
             alert("Compte créé ! Code : " + myCode);
             showPage('login-page');
         } else {
-            const { data: user, error } = await _supabase.from('users').select('*').eq('phone_number', phone).single();
+            const { data: user, error } = await _supabase.from('utilisateurs').select('*').eq('phone_number', phone).single();
             
             document.getElementById('loader').style.display = 'none';
             if(!user) return alert("Compte inexistant");
@@ -396,19 +396,19 @@
         if(parrain1) {
             if(!parrain1.team) parrain1.team = { l1: [], l2: [], l3: [] };
             parrain1.team.l1.push(newPhone);
-            await _supabase.from('users').update({ team: parrain1.team }).eq('id', parrain1.id);
+            await _supabase.from('utilisateurs').update({ team: parrain1.team }).eq('id', parrain1.id);
 
             if(parrain1.referred_by) {
-                const { data: parrain2 } = await _supabase.from('users').select('*').eq('invite_code', parrain1.referred_by).single();
+                const { data: parrain2 } = await _supabase.from('utilisateurs').select('*').eq('invite_code', parrain1.referred_by).single();
                 if(parrain2) {
                     parrain2.team.l2.push(newPhone);
-                    await _supabase.from('users').update({ team: parrain2.team }).eq('id', parrain2.id);
+                    await _supabase.from('utilisateurs').update({ team: parrain2.team }).eq('id', parrain2.id);
                     
                     if(parrain2.referred_by) {
-                        const { data: parrain3 } = await _supabase.from('users').select('*').eq('invite_code', parrain2.referred_by).single();
+                        const { data: parrain3 } = await _supabase.from('utilisateurs').select('*').eq('invite_code', parrain2.referred_by).single();
                         if(parrain3) {
                             parrain3.team.l3.push(newPhone);
-                            await _supabase.from('users').update({ team: parrain3.team }).eq('id', parrain3.id);
+                            await _supabase.from('utilisateurs').update({ team: parrain3.team }).eq('id', parrain3.id);
                         }
                     }
                 }
@@ -419,7 +419,7 @@
     async function saveAndRefresh() {
         if(currentUser) {
             // Sauvegarde sur Supabase
-            await _supabase.from('users').update({
+            await _supabase.from('utilisateurs').update({
                 balance: currentUser.balance,
                 logs: currentUser.logs,
                 orders: currentUser.orders,
