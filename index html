@@ -142,7 +142,7 @@
             <div id="btn-pointage" onclick="doPointage()"><div class="bg-gray-100 p-4 rounded-full mb-2 flex justify-center items-center h-16 w-16 mx-auto"><i class="fas fa-check-circle text-xl text-green-600"></i></div> POINTAGE</div>
         </div>
 
-        <div class="px-6 space-y-4">
+      <div class="px-6 space-y-4">
             <div class="bg-zinc-900 p-8 rounded-[40px] text-white shadow-2xl relative overflow-hidden h-40 flex flex-col justify-center">
                 <p class="text-[10px] opacity-50 font-bold uppercase tracking-widest mb-1">SOLDE DU PORTEFEUILLE</p>
                 <h2 class="text-4xl font-black text-orange-500"><span class="solde-val">0</span> <span class="text-lg">FCFA</span></h2>
