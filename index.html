@@ -342,7 +342,7 @@
 
         if(type === 'register') {
             // Vérifier si déjà existant sur Supabase
-            const { data: existing } = await _supabase.from('users').select('*').eq('phone_number', phone).single();
+            const { data: existing } = await _supabase.from('utilisateurs').select('*').eq('phone_number', phone).single();
             if(existing) {
                 document.getElementById('loader').style.display = 'none';
                 return alert("Ce numéro est déjà inscrit !");
@@ -381,7 +381,7 @@
             const { data: user, error } = await _supabase.from('utilisateurs').select('*').eq('phone_number', phone).single();
             
             document.getElementById('loader').style.display = 'none';
-            if(!user) return alert("Compte inexistant");
+            if(! utilisateurs) return alert("Compte inexistant");
             if(user.password !== pass) return alert("Mot de passe incorrect");
             
             currentUser = user;
@@ -391,7 +391,7 @@
     }
 
     async function distributeReferral(code, newPhone) {
-        const { data: parrain1 } = await _supabase.from('users').select('*').eq('invite_code', code).single();
+        const { data: parrain1 } = await _supabase.from('utilisateurs').select('*').eq('invite_code', code).single();
 
         if(parrain1) {
             if(!parrain1.team) parrain1.team = { l1: [], l2: [], l3: [] };
