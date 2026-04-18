@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dior2026 - Plateforme Officielle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --dior-orange: #e88e0c; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fdfdfd; margin: 0; }
+        .page { display: none; padding-bottom: 100px; animation: fadeIn 0.4s ease-out; }
+        .active { display: block !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #loader {
+            display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9);
+            z-index: 10000; justify-content: center; align-items: center; color: #000; flex-direction: column;
+        }
+        .disabled-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .feed-item { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .product-card-dior {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .s9-exclusive {
+            border: 3px solid #e88e0c;
+            background: linear-gradient(to bottom, #ffffff, #fff9f0);
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(232, 142, 12, 0.2);
+        }
+        .s9-badge {
+            background: #e88e0c;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 0 0 12px 0;
+            position: absolute;
+            z-index: 10;
+            text-transform: uppercase;
+        }
+
+        /* Styles spécifiques pour l'interface de liaison bancaire */
+        .bank-input-group { margin-bottom: 25px; }
+        .bank-input-group label { display: block; color: white; font-size: 15px; margin-bottom: 5px; font-weight: 600; }
+        .bank-input-group input, .bank-input-group select { 
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.4); 
+            color: white; padding: 12px 0; outline: none; font-weight: 500; font-size: 14px;
+        }
+        .bank-input-group select option { color: #333; }
+        .bank-input-group input::placeholder { color: rgba(255,255,255,0.5); font-size: 13px; }
+        
+        /* Style pour le sélecteur de pays */
+        .country-select {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            color: #9ca3af;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="w-12 h-12 border-4 border-black border-t-orange-500 rounded-full animate-spin mb-4"></div>
+    <p class="font-black text-xs uppercase tracking-widest">Dior2026</p>
+</div>
+
+<div class="max-w-md mx-auto min-h-screen shadow-2xl relative bg-white">
+
+    <div id="register-page" class="page active px-8 pt-20">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black italic tracking-tighter text-zinc-900">DIOR<span class="text-orange-500">2026</span></h1>
+            <p class="text-[10px] uppercase tracking-[0.4em] mt-3 font-bold text-gray-400">Créer un compte</p>
+        </div>
+        <div class="space-y-5">
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <select id="reg-country" class="country-select mr-2 w-auto border-r pr-2">
+                    <option value="+226">🇧🇫 +226</option>
+                    <option value="+228">🇹🇬 +228</option>
+                    <option value="+229">🇧🇯 +229</option>
+                    <option value="+221">🇸🇳 +221</option>
+                </select>
+                <input id="reg-phone" type="tel" placeholder="Numéro de téléphone" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <i class="fas fa-lock text-gray-300 mr-4"></i>
+                <input id="reg-pass" type="password" placeholder="Mot de passe" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <div class="bg-orange-50 rounded-3xl p-5 border border-orange-100 flex items-center">
+                <i class="fas fa-ticket-alt text-orange-400 mr-4"></i>
+                <input id="reg-invite" type="text" placeholder="Code d'invitation" class="bg-transparent outline-none flex-1 font-black text-orange-600">
+            </div>
+            <button onclick="handleAuth('register')" class="w-full bg-zinc-900 text-white py-6 rounded-3xl font-black text_lg shadow-xl mt-4">S'INSCRIRE</button>
+            <p onclick="showPage('login-page')" class="text-center text-sm font-bold text-gray-500 mt-6 cursor-pointer">J'ai déjà un compte</p>
+        </div>
+    </div>
+
+    <div id="login-page" class="page px-8 pt-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-black text-zinc-900 uppercase">Connexion</h2>
+        </div>
+        <div class="space-y-5">
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <select id="login-country" class="country-select mr-2 w-auto border-r pr-2">
+                    <option value="+226">🇧🇫 +226</option>
+                    <option value="+228">🇹🇬 +228</option>
+                    <option value="+229">🇧🇯 +229</option>
+                    <option value="+221">🇸🇳 +221</option>
+                </select>
+                <input id="login-phone" type="tel" placeholder="Téléphone" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <input id="login-pass" type="password" placeholder="Mot de passe" class="w-full p-6 bg-gray-50 rounded-3xl border border-gray-100 outline-none font-bold">
+            <button onclick="handleAuth('login')" class="w-full bg-zinc-900 text-white py-6 rounded-3xl font-black text-lg shadow-2xl">ACCÉDER</button>
+            <p onclick="showPage('register-page')" class="text-center text-sm font-bold text-gray-500 mt-6 cursor-pointer">Créer un compte</p>
+        </div>
+    </div>
+
+    <div id="home-page" class="page">...</div>
+    <div id="produit-page" class="page p-6">...</div>
+    <div id="team-page" class="page p-6">...</div>
+    <div id="profil-page" class="page p-8">...</div>
+    <div id="retrait-page" class="page">...</div>
+    <div id="lier-banque-page" class="page bg-[#2c3e50] min-h-screen p-8">...</div>
+    <div id="mes-commandes-page" class="page p-6">...</div>
+    <div id="historique-page" class="page p-6">...</div>
+
+    <nav id="main-nav" class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 flex justify-around py-6 z-50 hidden">
+        <button onclick="showPage('home-page')" class="flex flex-col items-center nav-btn" data-page="home-page"><i class="fas fa-home text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Accueil</span></button>
+        <button onclick="showPage('produit-page')" class="flex flex-col items-center nav-btn" data-page="produit-page"><i class="fas fa-shopping-bag text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Produit</span></button>
+        <button onclick="showPage('team-page')" class="flex flex-col items-center nav-btn" data-page="team-page"><i class="fas fa-users text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Équipe</span></button>
+        <button onclick="showPage('profil-page')" class="flex flex-col items-center nav-btn" data-page="profil-page"><i class="fas fa-user-circle text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Profil</span></button>
+    </nav>
+
+</div>
+
+<script>
+    // INITIALISATION SUPABASE
+    const _URL = "https://ciamfmmmznshnmmtxntf.supabase.co";
+    const _KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+    const supabaseClient = supabase.createClient(_URL, _KEY);
+
+    const produits = [
+        { id: 0, nom: "S0", prix: 0, gain: 200, img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" },
+        { id: 1, nom: "S1", prix: 10000, gain: 500, img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" },
+        { id: 2, nom: "S2", prix: 30000, gain: 1515, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" },
+        { id: 3, nom: "S3", prix: 70000, gain: 3571, img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&q=80" },
+        { id: 4, nom: "S4", prix: 140000, gain: 7216, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" },
+        { id: 5, nom: "S5", prix: 280000, gain: 14583, img: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&q=80" },
+        { id: 6, nom: "S6", prix: 500000, gain: 28000, img: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&q=80" },
+        { id: 7, nom: "S7", prix: 800000, gain: 45000, img: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=400&q=80" },
+        { id: 8, nom: "S8", prix: 1200000, gain: 70000, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
+        { id: 9, nom: "S9", prix: 2000000, gain: 125000, img: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" }
+    ];
+
+    let currentUser = null;
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        if (ref) { document.getElementById('reg-invite').value = ref; }
+    }
+
+    // NOUVELLE FONCTION D'AUTH AVEC SUPABASE
+    async function handleAuth(type) {
+        document.getElementById('loader').style.display = 'flex';
+        
+        const country = type === 'register' ? document.getElementById('reg-country').value : document.getElementById('login-country').value;
+        const rawPhone = type === 'register' ? document.getElementById('reg-phone').value : document.getElementById('login-phone').value;
+        const phone = country + rawPhone;
+        const pass = type === 'register' ? document.getElementById('reg-pass').value : document.getElementById('login-pass').value;
+        const refCode = type === 'register' ? document.getElementById('reg-invite').value : null;
+
+        if(!rawPhone || rawPhone.length < 8) {
+            document.getElementById('loader').style.display = 'none';
+            return alert("Numéro invalide");
+        }
+
+        if(type === 'register') {
+            // 1. Vérifier si le numéro existe déjà sur Supabase
+            const { data: existingUser } = await supabaseClient.from('utilisateurs').select('phone_number_code').eq('phone_number_code', phone).single();
+            if(existingUser) {
+                document.getElementById('loader').style.display = 'none';
+                return alert("Ce numéro est déjà inscrit !");
+            }
+            
+            const myCode = Math.random().toString(36).substring(7).toUpperCase();
+            
+            // 2. Insérer dans Supabase
+            const { error } = await supabaseClient.from('utilisateurs').insert([{ 
+                phone_number_code: phone, 
+                password: pass, 
+                balance: 1000, 
+                inviteCode: myCode, // à ajouter dans ta table Supabase si absent
+                referred_bay: refCode,
+                role: 'membre',
+                statut: 'actif',
+                team: { l1: [], l2: [], l3: [] },
+                logs: [], 
+                orders: [],
+                bankInfo: null
+            }]);
+
+            if(error) {
+                alert("Erreur Supabase: " + error.message);
+            } else {
+                alert("Compte créé sur le serveur ! Code : " + myCode);
+                showPage('login-page');
+            }
+            document.getElementById('loader').style.display = 'none';
+        } else {
+            // Connexion via Supabase
+            const { data: user, error } = await supabaseClient
+                .from('utilisateurs')
+                .select('*')
+                .eq('phone_number_code', phone)
+                .eq('password', pass)
+                .single();
+
+            if(!user || error) {
+                document.getElementById('loader').style.display = 'none';
+                return alert("Identifiants incorrects ou compte inexistant");
+            }
+            
+            currentUser = user;
+            saveAndRefresh();
+            loginSuccess();
+        }
+    }
+
+    // Sauvegarde à la fois en local (pour la rapidité) et sur Supabase (pour l'admin)
+    async function saveAndRefresh() {
+        if(currentUser) {
+            localStorage.setItem('dior_session', JSON.stringify(currentUser));
+            updateUI();
+            
+            // Mise à jour silencieuse sur Supabase
+            await supabaseClient
+                .from('utilisateurs')
+                .update({ 
+                    balance: currentUser.balance, 
+                    logs: currentUser.logs, 
+                    orders: currentUser.orders,
+                    bankInfo: currentUser.bankInfo,
+                    team: currentUser.team
+                })
+                .eq('phone_number_code', currentUser.phone_number_code);
+        }
+    }
+
+    // Le reste de tes fonctions (loginSuccess, logout, updateUI, etc.) reste identique 
+    // en remplaçant juste currentUser.phone par currentUser.phone_number_code.
+    
+    // [LOGIQUE DES GAINS ET DU CATALOGUE CONSERVÉE]
+    // ...
+</script>
+</body>
+</html>
